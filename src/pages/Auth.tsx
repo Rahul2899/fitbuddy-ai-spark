@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,13 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dumbbell, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -24,56 +20,19 @@ const Auth = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    username: '',
-    displayName: ''
+    username: ''
   });
-
-  // Check if user is already authenticated
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/dashboard');
-      }
-    };
-    checkUser();
-  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: loginData.email,
-        password: loginData.password,
-      });
-
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          setError('Invalid email or password. Please check your credentials and try again.');
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('Please check your email and click the confirmation link before signing in.');
-        } else {
-          setError(error.message);
-        }
-        return;
-      }
-
-      if (data.user) {
-        toast({
-          title: "Welcome back!",
-          description: "You've been successfully logged in.",
-        });
-        navigate('/dashboard');
-      }
-    } catch (error: any) {
-      setError('An unexpected error occurred. Please try again.');
-      console.error('Login error:', error);
-    } finally {
+    // Simulate login
+    setTimeout(() => {
+      navigate('/dashboard');
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -81,60 +40,17 @@ const Auth = () => {
     setIsLoading(true);
     setError('');
 
-    // Validation
     if (signupData.password !== signupData.confirmPassword) {
       setError('Passwords do not match');
       setIsLoading(false);
       return;
     }
 
-    if (signupData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    // Simulate signup
+    setTimeout(() => {
+      navigate('/onboarding');
       setIsLoading(false);
-      return;
-    }
-
-    try {
-      const redirectUrl = `${window.location.origin}/dashboard`;
-      
-      const { data, error } = await supabase.auth.signUp({
-        email: signupData.email,
-        password: signupData.password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            username: signupData.username,
-            display_name: signupData.displayName || signupData.username
-          }
-        }
-      });
-
-      if (error) {
-        if (error.message.includes('User already registered')) {
-          setError('An account with this email already exists. Please try logging in instead.');
-        } else {
-          setError(error.message);
-        }
-        return;
-      }
-
-      if (data.user) {
-        toast({
-          title: "Account created successfully!",
-          description: "Please check your email for a confirmation link.",
-        });
-        
-        // If email confirmation is disabled, redirect immediately
-        if (data.session) {
-          navigate('/dashboard');
-        }
-      }
-    } catch (error: any) {
-      setError('An unexpected error occurred. Please try again.');
-      console.error('Signup error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    }, 1500);
   };
 
   return (
@@ -144,8 +60,8 @@ const Auth = () => {
           <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
             <Dumbbell className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to FitBuddy</h1>
-          <p className="text-gray-600">Your AI-powered fitness companion</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to BewegungsLiga+</h1>
+          <p className="text-gray-600">Your smart fitness companion</p>
         </div>
 
         <Card>
@@ -243,21 +159,6 @@ const Auth = () => {
                         value={signupData.username}
                         onChange={(e) => setSignupData(prev => ({ ...prev, username: e.target.value }))}
                         required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-displayname">Display Name (Optional)</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-displayname"
-                        type="text"
-                        placeholder="How should others see you?"
-                        className="pl-10"
-                        value={signupData.displayName}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, displayName: e.target.value }))}
                       />
                     </div>
                   </div>

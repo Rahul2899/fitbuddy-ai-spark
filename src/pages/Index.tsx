@@ -1,27 +1,17 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dumbbell, Brain, Users, Target, Zap, Trophy, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-
-  // Redirect authenticated users to dashboard
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
 
   const features = [
     {
       icon: Brain,
-      title: "AI Personal Trainer",
+      title: "AI Health Companion",
       description: "Get personalized workout plans and real-time form corrections powered by advanced AI"
     },
     {
@@ -36,8 +26,8 @@ const Index = () => {
     },
     {
       icon: Trophy,
-      title: "Achievement System",
-      description: "Unlock badges and compete in challenges to stay motivated"
+      title: "Insurance Benefits",
+      description: "Automatically qualify for your health insurance bonus programs"
     }
   ];
 
@@ -52,21 +42,19 @@ const Index = () => {
           
           <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600">
             <Zap className="w-3 h-3 mr-1" />
-            AI-Powered Fitness
+            Smart Fitness Tracking
           </Badge>
           
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            Your Personal
+            BewegungsLiga
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {" "}AI Fitness
+              +
             </span>
-            <br />
-            Companion
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Transform your fitness journey with intelligent workouts, real-time coaching, 
-            and a supportive community. All powered by cutting-edge AI technology.
+            Transform your fitness journey with intelligent tracking, social motivation, 
+            and automatic insurance benefits.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -111,7 +99,7 @@ const Index = () => {
           <CardContent className="text-center py-12">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Fitness?</h2>
             <p className="text-xl mb-6 opacity-90">
-              Join thousands of users who have already started their AI-powered fitness journey
+              Join thousands of users who have already started their smart fitness journey
             </p>
             <Button 
               size="lg" 
