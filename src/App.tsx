@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import AICoach from "./pages/AICoach";
 import Progress from "./pages/Progress";
 import Achievements from "./pages/Achievements";
 import Social from "./pages/Social";
+import Competitions from "./pages/Competitions";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -34,6 +34,7 @@ const App = () => (
           <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
           <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
           <Route path="/social" element={<ProtectedRoute><Social /></ProtectedRoute>} />
+          <Route path="/competitions" element={<ProtectedRoute><Competitions /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

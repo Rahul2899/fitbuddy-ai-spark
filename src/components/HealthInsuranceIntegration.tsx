@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,9 @@ import {
   Gift,
   Star,
   Calendar,
-  Clock
+  Clock,
+  Check,
+  Euro
 } from 'lucide-react';
 
 interface InsuranceProvider {
@@ -151,9 +152,35 @@ const HealthInsuranceIntegration = () => {
     const stepsScore = (monthlyGoals.steps.current / monthlyGoals.steps.target) * 25;
     const sleepScore = (monthlyGoals.sleep.current / monthlyGoals.sleep.target) * 25;
     const heartRateScore = monthlyGoals.heartRate.current <= monthlyGoals.heartRate.target ? 25 : 15;
-    
+
     return Math.min(100, workoutScore + stepsScore + sleepScore + heartRateScore);
   };
+
+    const getCategoryColor = (category: string) => {
+        switch (category) {
+            case 'health':
+                return 'from-red-500 to-pink-500';
+            case 'fitness':
+                return 'from-green-500 to-teal-500';
+            case 'lifestyle':
+                return 'from-yellow-500 to-orange-500';
+            default:
+                return 'from-gray-500 to-gray-700';
+        }
+    };
+
+    const getCategoryIcon = (category: string) => {
+        switch (category) {
+            case 'health':
+                return <Heart className="w-6 h-6 text-white" />;
+            case 'fitness':
+                return <TrendingUp className="w-6 h-6 text-white" />;
+            case 'lifestyle':
+                return <Gift className="w-6 h-6 text-white" />;
+            default:
+                return <Star className="w-6 h-6 text-white" />;
+        }
+    };
 
   const insuranceScore = calculateInsuranceScore();
 
@@ -180,88 +207,105 @@ const HealthInsuranceIntegration = () => {
               <Progress value={insuranceScore} className="mb-2" />
               <p className="text-xs text-gray-600">Based on your fitness activities</p>
             </div>
-
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Award className="w-5 h-5 text-green-600" />
-                <span className="font-semibold">Reward Points</span>
+            <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-6 rounded-xl">
+              <div className="flex items-center gap-2 mb-3">
+                <Award className="w-6 h-6 text-green-600" />
+                <span className="font-bold text-lg">Verfügbare Punkte</span>
               </div>
-              <div className="text-3xl font-bold text-green-600 mb-2">{userPoints.toLocaleString()}</div>
-              <p className="text-xs text-gray-600">Available for redemption</p>
+              <div className="text-4xl font-bold text-green-600 mb-3">{userPoints.toLocaleString()}</div>
+              <p className="text-sm text-gray-700">Tausche gegen Belohnungen und Rabatte</p>
             </div>
-
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="w-5 h-5 text-purple-600" />
-                <span className="font-semibold">Monthly Savings</span>
+            <div className="bg-gradient-to-r from-amber-100 to-orange-100 p-6 rounded-xl">
+              <div className="flex items-center gap-2 mb-3">
+                <Euro className="w-6 h-6 text-amber-600" />
+                <span className="font-bold text-lg">Nächster Bonus</span>
               </div>
-              <div className="text-3xl font-bold text-purple-600 mb-2">
-                ${activeProvider ? insuranceProviders.find(p => p.id === activeProvider)?.currentDiscount || 0 : 0}
+              <div className="text-4xl font-bold text-amber-600 mb-3">€75</div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Fortschritt</span>
+                  <span>22/25 Tage</span>
+                </div>
+                <Progress value={88} className="h-3" />
               </div>
-              <p className="text-xs text-gray-600">Premium discount earned</p>
             </div>
           </div>
         </CardContent>
       </Card>
-
       <Tabs defaultValue="providers" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="providers">Providers</TabsTrigger>
-          <TabsTrigger value="rewards">Rewards</TabsTrigger>
-          <TabsTrigger value="metrics">Health Metrics</TabsTrigger>
-          <TabsTrigger value="goals">Goals</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 bg-white border-2 border-blue-200">
+          <TabsTrigger value="providers" className="text-lg">Krankenkassen</TabsTrigger>
+          <TabsTrigger value="rewards" className="text-lg">Belohnungen</TabsTrigger>
+          <TabsTrigger value="progress" className="text-lg">Monatsziele</TabsTrigger>
+          <TabsTrigger value="metrics" className="text-lg">Gesundheitsdaten</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="providers">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TabsContent value="providers" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {insuranceProviders.map((provider) => (
-              <Card key={provider.id} className={`${provider.connected ? 'ring-2 ring-green-500' : ''}`}>
-                <CardHeader className="pb-3">
+              <Card 
+                key={provider.id} 
+                className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                  provider.connected 
+                    ? 'border-2 border-green-500 bg-gradient-to-r from-green-50 to-emerald-50' 
+                    : 'border-2 border-gray-200 hover:border-blue-400'
+                }`}
+                onClick={() => !provider.connected && connectProvider(provider.id)}
+              >
+                <CardHeader>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{provider.logo}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-4xl">{provider.logo}</span>
                       <div>
-                        <h3 className="font-semibold">{provider.name}</h3>
-                        {provider.connected && (
-                          <Badge className="bg-green-600">Connected</Badge>
-                        )}
+                        <CardTitle className="text-xl">{provider.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-2">
+                          {provider.connected ? (
+                            <Badge className="bg-green-600 text-white text-sm px-3 py-1">
+                              <Check className="w-4 h-4 mr-1" />
+                              Verbunden
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-sm px-3 py-1">Nicht verbunden</Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div>
-                      <span className="text-sm font-medium">Benefits:</span>
-                      <ul className="text-xs text-gray-600 mt-1">
+                      <span className="text-sm font-bold text-gray-700">Vorteile:</span>
+                      <ul className="mt-2 space-y-2">
                         {provider.benefits.map((benefit, index) => (
-                          <li key={index}>• {benefit}</li>
+                          <li key={index} className="text-sm text-gray-700 flex items-center">
+                            <Star className="w-4 h-4 mr-2 text-amber-500" />
+                            {benefit}
+                          </li>
                         ))}
                       </ul>
                     </div>
 
-                    <div>
-                      <span className="text-sm font-medium">Discount:</span>
-                      <div className="flex items-center gap-2 mt-1">
+                    {provider.connected ? (
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-medium">Aktueller Rabatt:</span>
+                          <span className="font-bold text-green-600">{provider.currentDiscount}%</span>
+                        </div>
                         <Progress 
                           value={(provider.currentDiscount / provider.maxDiscount) * 100} 
-                          className="flex-1"
+                          className="h-3"
                         />
-                        <span className="text-xs">{provider.currentDiscount}%/{provider.maxDiscount}%</span>
+                        <p className="text-xs text-gray-600">
+                          Maximal möglich: {provider.maxDiscount}%
+                        </p>
                       </div>
-                    </div>
-
-                    {!provider.connected ? (
-                      <Button 
-                        onClick={() => connectProvider(provider.id)}
-                        className="w-full"
-                        size="sm"
-                      >
-                        Connect
-                      </Button>
                     ) : (
-                      <Button variant="outline" size="sm" className="w-full">
-                        Manage Connection
+                      <Button 
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" 
+                        onClick={() => connectProvider(provider.id)}
+                      >
+                        Krankenkasse verbinden
                       </Button>
                     )}
                   </div>
@@ -271,76 +315,51 @@ const HealthInsuranceIntegration = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="rewards">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <TabsContent value="rewards" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableRewards.map((reward) => (
-              <Card key={reward.id} className={reward.claimed ? 'opacity-50' : ''}>
-                <CardHeader className="pb-3">
+              <Card key={reward.id} className={`transition-all duration-300 hover:shadow-xl ${reward.claimed ? 'opacity-60 bg-gray-50' : ''}`}>
+                <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold">{reward.title}</h3>
-                      <p className="text-sm text-gray-600">{reward.description}</p>
-                    </div>
-                    <Badge variant={reward.category === 'health' ? 'default' : reward.category === 'fitness' ? 'secondary' : 'outline'}>
-                      {reward.category}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Gift className="w-4 h-4 text-purple-600" />
-                      <span className="font-semibold">{reward.points} points</span>
-                    </div>
-                    
-                    {!reward.claimed && (
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <Clock className="w-3 h-3" />
-                        <span>{reward.expiresIn} days left</span>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-14 h-14 rounded-full bg-gradient-to-r ${getCategoryColor(reward.category)} flex items-center justify-center shadow-lg`}>
+                        {getCategoryIcon(reward.category)}
+                        <span className="text-white">{getCategoryIcon(reward.category)}</span>
                       </div>
-                    )}
+                      <div>
+                        <CardTitle className="text-lg">{reward.title}</CardTitle>
+                        <CardDescription className="text-sm">{reward.description}</CardDescription>
+                      </div>
+                    </div>
                   </div>
-
-                  <Button
-                    onClick={() => claimReward(reward.id)}
-                    disabled={reward.claimed || userPoints < reward.points}
-                    className="w-full mt-3"
-                    size="sm"
-                  >
-                    {reward.claimed ? 'Claimed' : userPoints < reward.points ? 'Insufficient Points' : 'Claim Reward'}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="metrics">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {healthMetrics.map((metric, index) => (
-              <Card key={index}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Heart className="w-4 h-4" />
-                    {metric.name}
-                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold">{metric.current}{metric.unit}</span>
-                      <Badge variant={metric.improvement > 0 ? 'default' : 'secondary'}>
-                        {metric.improvement > 0 ? '+' : ''}{metric.improvement}{metric.unit}
+                      <span className="text-sm font-medium">Benötigte Punkte:</span>
+                      <Badge variant="outline" className="text-lg font-bold px-3 py-1">
+                        {reward.points.toLocaleString()}
                       </Badge>
                     </div>
-                    
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Progress to target</span>
-                        <span>{metric.target}{metric.unit}</span>
+
+                    {!reward.claimed && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">Läuft ab in:</span>
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          {reward.expiresIn} Tagen
+                        </div>
                       </div>
-                      <Progress value={(metric.current / metric.target) * 100} />
-                    </div>
+                    )}
+
+                    <Button 
+                      className="w-full text-lg py-3" 
+                      disabled={reward.claimed || userPoints < reward.points}
+                      onClick={() => claimReward(reward.id)}
+                    >
+                      {reward.claimed ? '✓ Bereits eingelöst' : 
+                       userPoints < reward.points ? 'Nicht genug Punkte' : 'Belohnung einlösen'}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -348,74 +367,82 @@ const HealthInsuranceIntegration = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="goals">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Monthly Fitness Goals
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span>Workouts Completed</span>
-                    <span>{monthlyGoals.workouts.current}/{monthlyGoals.workouts.target}</span>
-                  </div>
-                  <Progress value={(monthlyGoals.workouts.current / monthlyGoals.workouts.target) * 100} />
-                </div>
+        <TabsContent value="progress" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Object.entries(monthlyGoals).map(([key, goal]) => {
+              const titles = {
+                workouts: 'Trainingseinheiten',
+                steps: 'Schritte',
+                sleep: 'Schlafstunden',
+                heartRate: 'Ruhepuls'
+              };
 
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span>Steps</span>
-                    <span>{monthlyGoals.steps.current.toLocaleString()}/{monthlyGoals.steps.target.toLocaleString()}</span>
-                  </div>
-                  <Progress value={(monthlyGoals.steps.current / monthlyGoals.steps.target) * 100} />
-                </div>
-
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span>Average Sleep</span>
-                    <span>{monthlyGoals.sleep.current}h/{monthlyGoals.sleep.target}h</span>
-                  </div>
-                  <Progress value={(monthlyGoals.sleep.current / monthlyGoals.sleep.target) * 100} />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Insurance Benefits Earned</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <div>
-                      <span className="font-medium">Premium Discount</span>
-                      <p className="text-sm text-gray-600">Monthly savings earned</p>
+              return (
+                <Card key={key} className="hover:shadow-xl transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-xl">{titles[key as keyof typeof titles]}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-medium">Fortschritt:</span>
+                        <span className="font-bold text-2xl">
+                          {typeof goal.current === 'number' ? goal.current.toLocaleString() : goal.current} / 
+                          {typeof goal.target === 'number' ? goal.target.toLocaleString() : goal.target}
+                        </span>
+                      </div>
+                      <Progress value={(goal.current / goal.target) * 100} className="h-4" />
+                      <div className="text-center">
+                        <Badge 
+                          variant={goal.current >= goal.target ? "default" : "secondary"}
+                          className={`text-lg px-4 py-2 ${goal.current >= goal.target ? "bg-green-600" : ""}`}
+                        >
+                          {goal.current >= goal.target ? "Ziel erreicht! 🎉" : "Weiter so! 💪"}
+                        </Badge>
+                      </div>
                     </div>
-                    <span className="text-xl font-bold text-green-600">15%</span>
-                  </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </TabsContent>
 
-                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                    <div>
-                      <span className="font-medium">Wellness Credits</span>
-                      <p className="text-sm text-gray-600">Available this month</p>
+        <TabsContent value="metrics" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {healthMetrics.map((metric, index) => (
+              <Card key={index} className="hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="text-xl">{metric.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-blue-600 mb-3">
+                        {metric.current}{metric.unit}
+                      </div>
+                      <div className="text-lg text-gray-600">
+                        Ziel: {metric.target}{metric.unit}
+                      </div>
                     </div>
-                    <span className="text-xl font-bold text-blue-600">$125</span>
-                  </div>
 
-                  <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-                    <div>
-                      <span className="font-medium">Health Score</span>
-                      <p className="text-sm text-gray-600">Insurance rating</p>
+                    <div className="flex items-center justify-center">
+                      <Badge 
+                        variant={metric.improvement > 0 ? "default" : "secondary"}
+                        className={`text-lg px-4 py-2 ${metric.improvement > 0 ? "bg-green-600" : "bg-red-600"}`}
+                      >
+                        {metric.improvement > 0 ? '↗' : '↘'} {Math.abs(metric.improvement)}{metric.unit}
+                      </Badge>
                     </div>
-                    <span className="text-xl font-bold text-purple-600">A+</span>
+
+                    <Progress 
+                      value={Math.min((metric.current / metric.target) * 100, 100)} 
+                      className="h-4"
+                    />
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </TabsContent>
       </Tabs>

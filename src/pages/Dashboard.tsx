@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Target, Trophy, Users, Calendar, Zap, Brain, Heart, TrendingUp, Award } from 'lucide-react';
+import { Activity, Target, Trophy, Users, Calendar, Zap, Brain, Heart, TrendingUp, Award, Medal, Flame, Crown, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -12,74 +12,111 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [greeting, setGreeting] = useState('');
+  const [currentStreak, setCurrentStreak] = useState(12);
+  const [leaguePosition, setLeaguePosition] = useState(3);
 
   useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) setGreeting('Good morning');
-    else if (hour < 18) setGreeting('Good afternoon');
-    else setGreeting('Good evening');
+    if (hour < 12) setGreeting('Guten Morgen');
+    else if (hour < 18) setGreeting('Guten Tag');
+    else setGreeting('Guten Abend');
   }, []);
 
   const stats = {
-    weeklySteps: 52400,
+    weeklySteps: 67400,
     weeklyGoal: 70000,
-    currentStreak: 7,
-    totalPoints: 2840,
-    level: 12,
-    workoutsThisWeek: 5,
-    caloriesBurned: 1850,
-    avgHeartRate: 142
+    currentStreak: currentStreak,
+    totalPoints: 3840,
+    level: 15,
+    workoutsThisWeek: 6,
+    caloriesBurned: 2250,
+    avgHeartRate: 145,
+    insuranceBonus: 85, // percentage towards bonus
+    leagueRank: leaguePosition
   };
+
+  const competitions = [
+    {
+      title: "Bayern Winter Challenge",
+      description: "10.000 Schritte täglich im Januar",
+      progress: 78,
+      daysLeft: 8,
+      prize: "€50 + Wellness Wochenende",
+      participants: 2847,
+      icon: Medal,
+      color: "from-blue-600 to-blue-700"
+    },
+    {
+      title: "Neujahrs-Liga",
+      description: "Wöchentliche Team-Herausforderung",
+      progress: 92,
+      daysLeft: 3,
+      prize: "€100 Sportgutschein",
+      participants: 156,
+      icon: Crown,
+      color: "from-amber-500 to-orange-600"
+    }
+  ];
 
   const quickActions = [
     {
-      title: "Start Workout",
-      description: "Begin your fitness session",
+      title: "Training starten",
+      description: "Beginne deine Fitness-Session",
       icon: Activity,
       action: () => navigate('/workout-start'),
-      color: "from-emerald-600 to-teal-600",
+      color: "from-green-600 to-emerald-600",
       featured: true
     },
     {
-      title: "AI Coach",
-      description: "Get personalized guidance",
+      title: "KI-Coach",
+      description: "Personalisierte Beratung erhalten",
       icon: Brain,
       action: () => navigate('/ai-coach'),
-      color: "from-cyan-600 to-blue-600"
+      color: "from-purple-600 to-violet-600"
     },
     {
-      title: "View Progress",
-      description: "Track your achievements",
+      title: "Fortschritt anzeigen",
+      description: "Deine Erfolge verfolgen",
       icon: TrendingUp,
       action: () => navigate('/progress'),
-      color: "from-teal-600 to-emerald-600"
+      color: "from-blue-600 to-cyan-600"
     },
     {
-      title: "Social",
-      description: "Connect with friends",
+      title: "Liga & Community",
+      description: "Mit Freunden verbinden",
       icon: Users,
       action: () => navigate('/social'),
-      color: "from-blue-600 to-cyan-600"
+      color: "from-amber-500 to-orange-600"
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-cyan-50 to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-emerald-200/50 sticky top-0 z-50">
+      <nav className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-lg flex items-center justify-center">
-                <Activity className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 via-white to-red-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Activity className="w-7 h-7 text-blue-800" />
               </div>
-              <span className="text-xl font-bold text-gray-900">FitBuddy AI</span>
+              <div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
+                  BewegungsLiga+
+                </span>
+                <div className="text-xs text-gray-600">Dein Fitness-Companion</div>
+              </div>
             </div>
             <div className="flex items-center gap-4">
-              <Badge className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
+              <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white border-0">
+                <Crown className="w-4 h-4 mr-1" />
                 Level {stats.level}
               </Badge>
-              <Button variant="outline" onClick={signOut}>Sign Out</Button>
+              <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0">
+                <Flame className="w-4 h-4 mr-1" />
+                {stats.currentStreak} Tage Streak
+              </Badge>
+              <Button variant="outline" onClick={signOut}>Abmelden</Button>
             </div>
           </div>
         </div>
@@ -91,73 +128,128 @@ const Dashboard = () => {
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {greeting}, {user?.email?.split('@')[0] || 'Fitness Champion'}! 👋
+                {greeting}, {user?.email?.split('@')[0] || 'Champion'}! 🏆
               </h1>
-              <p className="text-gray-600 text-lg">Ready to crush your fitness goals today?</p>
+              <p className="text-gray-600 text-lg">Bereit, deine Fitnessziele heute zu erreichen?</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent">
-                {stats.currentStreak} Day Streak! 🔥
+              <div className="flex items-center gap-2 mb-2">
+                <div className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+                  Liga Rang #{stats.leagueRank}
+                </div>
+                <Medal className="w-8 h-8 text-amber-500" />
               </div>
-              <p className="text-gray-600">Keep it up!</p>
+              <p className="text-gray-600">Bayern Winter Liga</p>
             </div>
           </div>
         </header>
 
+        {/* Active Competitions */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Trophy className="w-7 h-7 text-amber-500" />
+            Aktive Wettkämpfe
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {competitions.map((comp, index) => (
+              <Card key={index} className="border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 shadow-xl">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 bg-gradient-to-r ${comp.color} rounded-xl flex items-center justify-center`}>
+                        <comp.icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">{comp.title}</CardTitle>
+                        <CardDescription>{comp.description}</CardDescription>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="border-amber-500 text-amber-700">
+                      {comp.daysLeft} Tage
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>Fortschritt</span>
+                        <span className="font-semibold">{comp.progress}%</span>
+                      </div>
+                      <Progress value={comp.progress} className="h-3" />
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">
+                        <Users className="w-4 h-4 inline mr-1" />
+                        {comp.participants.toLocaleString()} Teilnehmer
+                      </span>
+                      <span className="font-semibold text-amber-700">🏆 {comp.prize}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 shadow-lg">
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-emerald-100">Weekly Steps</p>
+                  <p className="text-blue-100">Wöchentliche Schritte</p>
                   <p className="text-3xl font-bold">{stats.weeklySteps.toLocaleString()}</p>
-                  <p className="text-emerald-200 text-sm">Goal: {stats.weeklyGoal.toLocaleString()}</p>
+                  <p className="text-blue-200 text-sm">Ziel: {stats.weeklyGoal.toLocaleString()}</p>
                 </div>
-                <Activity className="w-10 h-10 text-emerald-200" />
+                <Activity className="w-10 h-10 text-blue-200" />
               </div>
               <Progress 
                 value={(stats.weeklySteps / stats.weeklyGoal) * 100} 
-                className="mt-3 bg-emerald-600/30" 
+                className="mt-3 bg-blue-600/30" 
               />
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0 shadow-lg">
+          <Card className="bg-gradient-to-r from-purple-500 to-violet-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-cyan-100">Workouts</p>
+                  <p className="text-purple-100">Krankenkassen-Bonus</p>
+                  <p className="text-3xl font-bold">{stats.insuranceBonus}%</p>
+                  <p className="text-purple-200 text-sm">bis zur Auszahlung</p>
+                </div>
+                <Shield className="w-10 h-10 text-purple-200" />
+              </div>
+              <Progress 
+                value={stats.insuranceBonus} 
+                className="mt-3 bg-purple-600/30" 
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-xl">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-100">Trainings</p>
                   <p className="text-3xl font-bold">{stats.workoutsThisWeek}</p>
-                  <p className="text-cyan-200 text-sm">This week</p>
+                  <p className="text-green-200 text-sm">Diese Woche</p>
                 </div>
-                <Target className="w-10 h-10 text-cyan-200" />
+                <Target className="w-10 h-10 text-green-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white border-0 shadow-lg">
+          <Card className="bg-gradient-to-r from-red-500 to-pink-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-teal-100">Calories Burned</p>
-                  <p className="text-3xl font-bold">{stats.caloriesBurned}</p>
-                  <p className="text-teal-200 text-sm">This week</p>
-                </div>
-                <Zap className="w-10 h-10 text-teal-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100">Avg Heart Rate</p>
+                  <p className="text-red-100">Herzfrequenz</p>
                   <p className="text-3xl font-bold">{stats.avgHeartRate}</p>
-                  <p className="text-blue-200 text-sm">BPM</p>
+                  <p className="text-red-200 text-sm">BPM Durchschnitt</p>
                 </div>
-                <Heart className="w-10 h-10 text-blue-200" />
+                <Heart className="w-10 h-10 text-red-200" />
               </div>
             </CardContent>
           </Card>
@@ -168,8 +260,8 @@ const Dashboard = () => {
           {quickActions.map((action, index) => (
             <Card 
               key={index} 
-              className={`cursor-pointer hover:shadow-xl transition-all duration-300 border-0 ${
-                action.featured ? 'ring-2 ring-emerald-500 ring-opacity-50' : ''
+              className={`cursor-pointer hover:shadow-2xl transition-all duration-300 border-0 ${
+                action.featured ? 'ring-2 ring-green-500 ring-opacity-50' : ''
               }`}
               onClick={action.action}
             >
@@ -180,8 +272,8 @@ const Dashboard = () => {
                 <h3 className="font-semibold text-gray-900 mb-2">{action.title}</h3>
                 <p className="text-gray-600 text-sm">{action.description}</p>
                 {action.featured && (
-                  <Badge className="mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
-                    Recommended
+                  <Badge className="mt-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+                    Empfohlen
                   </Badge>
                 )}
               </CardContent>
@@ -191,57 +283,57 @@ const Dashboard = () => {
 
         {/* Progress Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50">
+          <Card className="bg-white/80 backdrop-blur-sm border-blue-200/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-emerald-600" />
-                Insurance Bonus Progress
+                <Shield className="w-5 h-5 text-blue-600" />
+                Versicherungsbonus Fortschritt
               </CardTitle>
-              <CardDescription>Track your progress towards insurance rewards</CardDescription>
+              <CardDescription>Verfolge deinen Fortschritt zu Versicherungsbelohnungen</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Monthly Goal Progress</span>
-                  <span className="text-sm text-gray-600">18/20 days</span>
+                  <span className="text-sm font-medium">Monatsziel Fortschritt</span>
+                  <span className="text-sm text-gray-600">22/25 Tage</span>
                 </div>
-                <Progress value={90} className="w-full" />
+                <Progress value={88} className="w-full" />
                 <div className="text-center">
-                  <Badge className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
-                    2 more days to earn $50 bonus!
+                  <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                    Noch 3 Tage bis zu €75 Bonus!
                   </Badge>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50">
+          <Card className="bg-white/80 backdrop-blur-sm border-amber-200/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-cyan-600" />
-                Fitness Community
+                <Trophy className="w-5 h-5 text-amber-600" />
+                Liga Leaderboard
               </CardTitle>
-              <CardDescription>Your social fitness network</CardDescription>
+              <CardDescription>Dein Ranking in der Bayern Winter Liga</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-600 to-cyan-600 flex items-center justify-center">
-                      <Award className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
+                      <Crown className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium">Fitness Champions League</p>
-                      <p className="text-sm text-gray-600">Rank #3 this week</p>
+                      <p className="font-medium">Bayern Winter Liga</p>
+                      <p className="text-sm text-gray-600">Rang #{stats.leagueRank} von 2.847</p>
                     </div>
                   </div>
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => navigate('/social')}
-                    className="border-emerald-200 hover:bg-emerald-50"
+                    className="border-amber-200 hover:bg-amber-50"
                   >
-                    View
+                    Anzeigen
                   </Button>
                 </div>
               </div>
@@ -250,28 +342,34 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Activity */}
-        <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50">
+        <Card className="bg-white/80 backdrop-blur-sm border-gray-200/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-teal-600" />
-              Recent Activity
+              <Calendar className="w-5 h-5 text-gray-600" />
+              Letzte Aktivitäten
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {[
-                { activity: "Completed HIIT Workout", time: "2 hours ago", calories: 320 },
-                { activity: "Achieved 10k steps", time: "Yesterday", calories: 450 },
-                { activity: "New personal record in squats", time: "2 days ago", calories: 280 }
+                { activity: "HIIT-Training abgeschlossen", time: "vor 2 Stunden", calories: 320, badge: "🔥" },
+                { activity: "12k Schritte erreicht", time: "Gestern", calories: 450, badge: "👟" },
+                { activity: "Neuer Rekord bei Kniebeugen", time: "vor 2 Tagen", calories: 280, badge: "💪" },
+                { activity: "Liga-Challenge gewonnen", time: "vor 3 Tagen", calories: 0, badge: "🏆" }
               ].map((item, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">{item.activity}</p>
-                    <p className="text-sm text-gray-600">{item.time}</p>
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{item.badge}</span>
+                    <div>
+                      <p className="font-medium text-gray-900">{item.activity}</p>
+                      <p className="text-sm text-gray-600">{item.time}</p>
+                    </div>
                   </div>
-                  <Badge variant="outline" className="text-emerald-600 border-emerald-200">
-                    {item.calories} cal
-                  </Badge>
+                  {item.calories > 0 && (
+                    <Badge variant="outline" className="text-green-600 border-green-200">
+                      {item.calories} kcal
+                    </Badge>
+                  )}
                 </div>
               ))}
             </div>
