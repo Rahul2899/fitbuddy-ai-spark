@@ -1,14 +1,12 @@
-
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { Activity, Shield, Users } from "lucide-react";
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
-  Activity, 
   Heart, 
   Trophy, 
-  Users, 
-  Shield, 
   Zap, 
   Target, 
   TrendingUp, 
@@ -19,7 +17,6 @@ import {
   BarChart3,
   Flame
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -103,24 +100,24 @@ const Index = () => {
           <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-r from-blue-600 via-white to-red-600 rounded-full flex items-center justify-center shadow-2xl">
             <Medal className="w-16 h-16 text-blue-800" />
           </div>
-          
+
           <Badge className="mb-6 bg-gradient-to-r from-blue-600 to-red-600 text-white border-0 text-lg px-6 py-2">
             <Zap className="w-4 h-4 mr-2" />
             Bavarian Movement Revolution
           </Badge>
-          
+
           <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-8">
             Movement for
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 bg-clip-text text-transparent block">
               Everyone
             </span>
           </h1>
-          
+
           <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
             Transform your fitness journey with AI-powered coaching, real-time form analysis, 
             social motivation, and automatic health insurance bonuses. The future of personalized movement is here.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button 
               size="lg" 
