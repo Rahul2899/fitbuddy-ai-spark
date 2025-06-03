@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,6 +58,7 @@ const WorkoutStart = () => {
       setTimeLeft(45);
     } else {
       setIsActive(false);
+      // Navigate to workout complete page
       navigate('/workout-complete');
     }
   };

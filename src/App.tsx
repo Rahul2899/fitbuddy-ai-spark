@@ -11,7 +11,11 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import AICoach from "./pages/AICoach";
 import WorkoutStart from "./pages/WorkoutStart";
+import WorkoutComplete from "./pages/WorkoutComplete";
 import Social from "./pages/Social";
+import Workouts from "./pages/Workouts";
+import Progress from "./pages/Progress";
+import Achievements from "./pages/Achievements";
 import NotFound from "./pages/NotFound";
 import WorkoutBuddyFinder from "./components/WorkoutBuddyFinder";
 import HealthInsuranceIntegration from "./components/HealthInsuranceIntegration";
@@ -49,6 +53,38 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <WorkoutStart />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/workout-complete" 
+              element={
+                <ProtectedRoute>
+                  <WorkoutComplete />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/workouts" 
+              element={
+                <ProtectedRoute>
+                  <Workouts />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/progress" 
+              element={
+                <ProtectedRoute>
+                  <Progress />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/achievements" 
+              element={
+                <ProtectedRoute>
+                  <Achievements />
                 </ProtectedRoute>
               } 
             />

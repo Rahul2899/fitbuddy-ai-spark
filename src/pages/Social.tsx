@@ -1,220 +1,330 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Heart, MessageCircle, Trophy, Users, Share } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Plus, Users, Flame, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
+interface SocialPost {
+  id: string;
+  content: string;
+  user_id: string;
+  likes_count: number;
+  created_at: string;
+  image_url?: string;
+  profiles?: {
+    display_name: string;
+    username: string;
+  };
+}
 
 const Social = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [posts, setPosts] = useState<SocialPost[]>([]);
+  const [newPost, setNewPost] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [posting, setPosting] = useState(false);
 
-  const posts = [
-    {
-      id: 1,
-      user: { name: "Sarah Chen", avatar: "", level: 15 },
-      type: "workout",
-      content: "Just crushed a 45-minute HIIT session! 💪 Feeling stronger every day!",
-      workout: { name: "HIIT Cardio", duration: "45 min", calories: 380 },
-      likes: 24,
-      comments: 8,
-      timestamp: "2 hours ago"
-    },
-    {
-      id: 2,
-      user: { name: "Mike Johnson", avatar: "", level: 12 },
-      type: "achievement",
-      content: "Finally hit my goal of 50 push-ups in a row! 🎉",
-      achievement: { name: "Push-up Master", points: 500 },
-      likes: 18,
-      comments: 5,
-      timestamp: "4 hours ago"
-    },
-    {
-      id: 3,
-      user: { name: "Emma Wilson", avatar: "", level: 18 },
-      type: "progress",
-      content: "30-day transformation update! Consistency is key 🔥",
-      progress: { before: "Day 1", after: "Day 30", improvement: "Lost 8 lbs, gained muscle" },
-      likes: 42,
-      comments: 15,
-      timestamp: "6 hours ago"
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('social_posts')
+        .select(`
+          *,
+          profiles (
+            display_name,
+            username
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load social posts",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const challenges = [
-    { id: 1, name: "30-Day Plank Challenge", participants: 156, daysLeft: 12 },
-    { id: 2, name: "10K Steps Daily", participants: 89, daysLeft: 5 },
-    { id: 3, name: "Hydration Hero", participants: 203, daysLeft: 18 }
-  ];
+  const createPost = async () => {
+    if (!newPost.trim()) return;
 
-  const leaderboard = [
-    { rank: 1, name: "Alex Rivera", points: 4250, level: 20 },
-    { rank: 2, name: "Jordan Kim", points: 3980, level: 19 },
-    { rank: 3, name: "Sam Taylor", points: 3760, level: 18 },
-    { rank: 4, name: "You", points: 2840, level: 12 },
-    { rank: 5, name: "Casey Brown", points: 2650, level: 11 }
-  ];
+    setPosting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('social_posts')
+        .insert({
+          user_id: user.id,
+          content: newPost.trim()
+        });
+
+      if (error) throw error;
+
+      setNewPost('');
+      await fetchPosts(); // Refresh posts
+      
+      toast({
+        title: "Posted!",
+        description: "Your post has been shared with the community",
+      });
+    } catch (error) {
+      console.error('Error creating post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create post",
+        variant: "destructive"
+      });
+    } finally {
+      setPosting(false);
+    }
+  };
+
+  const toggleLike = async (postId: string, currentLikes: number) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Check if user already liked this post
+      const { data: existingLike } = await supabase
+        .from('post_likes')
+        .select('id')
+        .eq('post_id', postId)
+        .eq('user_id', user.id)
+        .single();
+
+      if (existingLike) {
+        // Unlike
+        await supabase
+          .from('post_likes')
+          .delete()
+          .eq('post_id', postId)
+          .eq('user_id', user.id);
+      } else {
+        // Like
+        await supabase
+          .from('post_likes')
+          .insert({
+            post_id: postId,
+            user_id: user.id
+          });
+      }
+
+      // Refresh posts to get updated like counts
+      await fetchPosts();
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInHours = diffInMs / (1000 * 60 * 60);
+
+    if (diffInHours < 1) {
+      return 'Just now';
+    } else if (diffInHours < 24) {
+      return `${Math.floor(diffInHours)}h ago`;
+    } else {
+      return `${Math.floor(diffInHours / 24)}d ago`;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-40 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 p-6">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-6">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Social Feed</h1>
+            <p className="text-gray-600 mt-2">Connect with the fitness community</p>
+          </div>
           <Button 
-            variant="ghost" 
+            variant="outline" 
             onClick={() => navigate('/dashboard')}
-            className="mb-4"
           >
-            ← Back to Dashboard
+            Back to Dashboard
           </Button>
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-                <Users className="w-8 h-8" />
-                Social Feed
-              </h1>
-              <p className="text-gray-600 mt-2">Connect with your fitness community</p>
+        </div>
+
+        {/* Create Post */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Plus className="w-5 h-5" />
+              Share Your Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Textarea
+                placeholder="Share your workout achievements, motivation, or tips with the community..."
+                value={newPost}
+                onChange={(e) => setNewPost(e.target.value)}
+                className="min-h-[100px]"
+              />
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-gray-500">{newPost.length}/500 characters</p>
+                <Button 
+                  onClick={createPost}
+                  disabled={!newPost.trim() || posting}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600"
+                >
+                  {posting ? "Posting..." : "Share Post"}
+                </Button>
+              </div>
             </div>
-            <Button className="bg-gradient-to-r from-pink-600 to-purple-600">
-              <Share className="w-4 h-4 mr-2" />
-              Share Progress
-            </Button>
-          </div>
-        </header>
+          </CardContent>
+        </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Activity Feed</CardTitle>
-                <CardDescription>See what your fitness friends are up to</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {posts.map((post) => (
-                    <div key={post.id} className="border-b border-gray-100 pb-6 last:border-b-0">
-                      <div className="flex items-start gap-3 mb-3">
-                        <Avatar>
-                          <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-500 text-white">
-                            {post.user.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">{post.user.name}</span>
-                            <Badge variant="outline" className="text-xs">
-                              Level {post.user.level}
-                            </Badge>
-                          </div>
-                          <p className="text-gray-600 text-sm">{post.timestamp}</p>
-                        </div>
-                      </div>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/buddy-finder')}
+            className="h-16"
+          >
+            <div className="text-center">
+              <Users className="w-6 h-6 mx-auto mb-1" />
+              <span className="text-sm">Find Buddies</span>
+            </div>
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/achievements')}
+            className="h-16"
+          >
+            <div className="text-center">
+              <Flame className="w-6 h-6 mx-auto mb-1" />
+              <span className="text-sm">Achievements</span>
+            </div>
+          </Button>
+        </div>
 
-                      <p className="mb-3">{post.content}</p>
-
-                      {post.type === 'workout' && post.workout && (
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
-                          <div className="flex justify-between items-center">
-                            <span className="font-medium">{post.workout.name}</span>
-                            <div className="text-sm text-gray-600">
-                              {post.workout.duration} • {post.workout.calories} cal
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {post.type === 'achievement' && post.achievement && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
-                          <div className="flex items-center gap-2">
-                            <Trophy className="w-5 h-5 text-yellow-600" />
-                            <span className="font-medium">{post.achievement.name}</span>
-                            <Badge className="bg-yellow-600">+{post.achievement.points} pts</Badge>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-4 text-gray-600">
-                        <button className="flex items-center gap-1 hover:text-pink-600">
-                          <Heart className="w-4 h-4" />
-                          <span className="text-sm">{post.likes}</span>
-                        </button>
-                        <button className="flex items-center gap-1 hover:text-blue-600">
-                          <MessageCircle className="w-4 h-4" />
-                          <span className="text-sm">{post.comments}</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        {/* Posts Feed */}
+        <div className="space-y-6">
+          {posts.length === 0 ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-xl font-semibold mb-2">No posts yet</h3>
+                <p className="text-gray-600 mb-6">
+                  Be the first to share your fitness journey with the community!
+                </p>
+                <Button 
+                  onClick={() => navigate('/workout-start')}
+                  className="bg-gradient-to-r from-green-600 to-blue-600"
+                >
+                  Start a Workout
+                </Button>
               </CardContent>
             </Card>
-          </div>
+          ) : (
+            posts.map((post) => (
+              <Card key={post.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                          {post.profiles?.display_name?.charAt(0) || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold">
+                          {post.profiles?.display_name || 'Anonymous User'}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          @{post.profiles?.username || 'user'} • {formatTimeAgo(post.created_at)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-900 mb-4 whitespace-pre-wrap">{post.content}</p>
+                  
+                  {post.image_url && (
+                    <img 
+                      src={post.image_url} 
+                      alt="Post image" 
+                      className="w-full rounded-lg mb-4"
+                    />
+                  )}
 
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Trophy className="w-5 h-5" />
-                  Leaderboard
-                </CardTitle>
-                <CardDescription>This week's top performers</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {leaderboard.map((user) => (
-                    <div 
-                      key={user.rank} 
-                      className={`flex items-center justify-between p-2 rounded-lg ${
-                        user.name === 'You' ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'
-                      }`}
+                  <div className="flex items-center gap-4 pt-4 border-t">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleLike(post.id, post.likes_count)}
+                      className="flex items-center gap-2 hover:text-red-600"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                          user.rank === 1 ? 'bg-yellow-100 text-yellow-800' :
-                          user.rank === 2 ? 'bg-gray-100 text-gray-800' :
-                          user.rank === 3 ? 'bg-orange-100 text-orange-800' :
-                          'bg-gray-50 text-gray-600'
-                        }`}>
-                          {user.rank}
-                        </div>
-                        <div>
-                          <p className={`font-medium ${user.name === 'You' ? 'text-blue-800' : ''}`}>
-                            {user.name}
-                          </p>
-                          <p className="text-xs text-gray-600">Level {user.level}</p>
-                        </div>
-                      </div>
-                      <span className="font-semibold">{user.points.toLocaleString()}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Active Challenges</CardTitle>
-                <CardDescription>Join community challenges</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {challenges.map((challenge) => (
-                    <div key={challenge.id} className="border border-gray-200 rounded-lg p-3">
-                      <h4 className="font-medium mb-2">{challenge.name}</h4>
-                      <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
-                        <span>{challenge.participants} participants</span>
-                        <span>{challenge.daysLeft} days left</span>
-                      </div>
-                      <Button size="sm" variant="outline" className="w-full">
-                        Join Challenge
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                      <Heart className="w-4 h-4" />
+                      <span>{post.likes_count}</span>
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center gap-2"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Comment</span>
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      <span>Share</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </div>
     </div>
