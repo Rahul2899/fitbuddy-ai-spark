@@ -1,0 +1,87 @@
+1. User Onboarding & Insurance Selection 
+●
+●
+●
+Simple sign-up (name, email)
+Pick your health insurer from a list (start with TK, AOK, or demo-insurer)
+Consent to data use/bonus reporting
+2. Connect Activity Data 
+●
+●
+Integrate Google Health Connect (or Google Fit if faster for your demo)
+Pull step/activity data (can simulate for demo)
+3. Calculate & Display Health/Activity Score 
+●
+Show user’s daily/weekly steps and “activity score” (simple, transparent formula)
+●
+Indicate if they’re on track for a bonus (e.g.,
+“You’re 80% to your TK bonus!”)
+4. Map Bonus Program Rules 
+●
+●
+Manually code 1–2 insurer bonus requirements (e.g.,
+€15 bonus”)
+Match user’s data to bonus criteria and update dashboard
+Show “What’s needed to qualify?” (clarity = value)
+“8,000 steps per day for 20 days =
+5. Simple League/Group System
+●
+●
+●
+Allow user to create or join a group (“Liga”) via invite link or code
+Group dashboard: See group progress toward insurer bonus
+Show who’s most active this week (mini-leaderboard)
+Keep it light—no need for full chat, just progress sharing and simple reactions (“👏” “👍”
+badges)
+6. Gamified Streaks & Achievements 
+●
+●
+●
+Award streak badges for daily activity (solo & group)
+Celebrate “group champion” of the week (auto-assign with emoji, e.g.,
+Show unlocked achievements on dashboard
+“🔥”)
+7. Bonus Claim Automation 
+●
+●
+●
+When bonus criteria are met, show “Ready to claim!” button
+Generate PDF or summary email with required data
+Demo: Simulate sending to insurer (no actual submission needed for demo)
+8. Polish, Privacy, and Demo Prep 
+●
+●
+●
+Add clear “what we share” and “how we protect your data” screen
+Refine onboarding and main dashboard UI (bonus progress + league at center)
+Prepare story/demo walk-through: User joins → gets active → qualifies for bonus →
+claims with 1 click
+
+●
+●
+Real course/event suggestions (use static demo if needed)
+Deep chat/messaging (can be “coming soon”)
+Multiple insurers or full list—focus on 1–2 for demo
+
+●
+●
+A user can:
+○
+○
+○
+○
+○
+○
+Sign up and select their insurer
+Connect their health data
+Join or create a group with friends/family
+See progress towards insurer bonus (solo & group)
+Celebrate streaks/champions
+Claim their bonus in 1 click (auto-generated proof)
+Insurer gets:
+○
+Validated proof of user activity
+○
+Simple, automated claims
+ay!”
+
