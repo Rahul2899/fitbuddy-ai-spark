@@ -3,7 +3,22 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, Target, Users, Shield, Dumbbell, Zap, Trophy, Heart, Star, Medal } from 'lucide-react';
+import { 
+  Activity, 
+  Heart, 
+  Trophy, 
+  Users, 
+  Shield, 
+  Zap, 
+  Target, 
+  TrendingUp, 
+  Award,
+  Medal,
+  Dumbbell,
+  Brain,
+  BarChart3,
+  Flame
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
@@ -12,43 +27,47 @@ const Index = () => {
   const features = [
     {
       icon: Brain,
-      title: "KI-Fitness Coach",
-      description: "Personalisierte Trainingspläne und Echtzeit-Formkorrekturen mit fortschrittlicher KI-Technologie",
-      color: "from-blue-600 to-indigo-600"
+      title: "AI-Powered Coaching",
+      description: "Get personalized workout recommendations and real-time form analysis powered by advanced AI technology.",
+      color: "from-purple-600 to-violet-600"
+    },
+    {
+      icon: BarChart3,
+      title: "Advanced Analytics",
+      description: "Comprehensive data insights with beautiful charts and detailed progress tracking across all metrics.",
+      color: "from-blue-600 to-cyan-600"
     },
     {
       icon: Trophy,
-      title: "Liga-System & Wettkämpfe",
-      description: "Schließe dich lokalen Ligen an, tritt in Wettkämpfen an und gewinne echte Preise",
+      title: "Competitive Leagues",
+      description: "Join Bavaria-wide competitions, climb leaderboards, and win real prizes and insurance bonuses.",
       color: "from-amber-500 to-orange-600"
     },
     {
-      icon: Users,
-      title: "Soziale Bewegungsgemeinschaft",
-      description: "Verbinde dich mit Gleichgesinnten und teile deine Fitness-Reise in der Gemeinschaft",
-      color: "from-green-500 to-emerald-600"
+      icon: Shield,
+      title: "Insurance Integration",
+      description: "Automatically earn bonuses and discounts from major German health insurance providers.",
+      color: "from-green-600 to-emerald-600"
     },
     {
-      icon: Shield,
-      title: "Krankenkassen-Integration",
-      description: "Automatische Qualifikation für Bonusprogramme deiner Krankenkasse - sicher und datenschutzkonform",
-      color: "from-purple-500 to-violet-600"
+      icon: Users,
+      title: "Social Community",
+      description: "Connect with like-minded fitness enthusiasts, join teams, and motivate each other.",
+      color: "from-pink-500 to-rose-600"
+    },
+    {
+      icon: Flame,
+      title: "Streak System",
+      description: "Build momentum with our advanced streak tracking and get rewarded for consistency.",
+      color: "from-red-500 to-orange-500"
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Maria Schneider",
-      role: "Fitness-Enthusiastin",
-      text: "BewegungsLiga+ hat meine Trainingsroutine revolutioniert. Der KI-Coach fühlt sich an wie ein persönlicher Trainer rund um die Uhr!",
-      rating: 5
-    },
-    {
-      name: "Thomas Weber",
-      role: "Berufstätiger",
-      text: "Endlich eine Fitness-App, die sich meinem Zeitplan anpasst. Die Krankenkassen-Boni sind ein großartiger Zusatz!",
-      rating: 5
-    }
+  const stats = [
+    { number: "50K+", label: "Active Users", icon: Users },
+    { number: "€2.5M+", label: "Insurance Bonuses Earned", icon: Shield },
+    { number: "1.2M+", label: "Workouts Completed", icon: Activity },
+    { number: "98%", label: "User Satisfaction", icon: Heart }
   ];
 
   return (
@@ -72,7 +91,7 @@ const Index = () => {
               <Badge className="bg-gradient-to-r from-blue-600 to-red-600 text-white border-0">
                 🏆 Hackathon 2025
               </Badge>
-              <Button onClick={() => navigate('/auth')}>Jetzt starten</Button>
+              <Button onClick={() => navigate('/auth')}>Get Started</Button>
             </div>
           </div>
         </div>
@@ -87,106 +106,84 @@ const Index = () => {
           
           <Badge className="mb-6 bg-gradient-to-r from-blue-600 to-red-600 text-white border-0 text-lg px-6 py-2">
             <Zap className="w-4 h-4 mr-2" />
-            Bayerische Bewegungsrevolution
+            Bavarian Movement Revolution
           </Badge>
           
           <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-8">
-            Bewegung für
+            Movement for
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 bg-clip-text text-transparent block">
-              Alle zugänglich
+              Everyone
             </span>
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
-            Transformiere deine Fitness-Reise mit KI-gestütztem Coaching, Echtzeit-Formanalyse, 
-            sozialer Motivation und automatischen Krankenkassen-Boni. Die Zukunft der personalisierten Bewegung ist hier.
+            Transform your fitness journey with AI-powered coaching, real-time form analysis, 
+            social motivation, and automatic health insurance bonuses. The future of personalized movement is here.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-xl px-12 py-8 shadow-2xl"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-xl px-12 py-6"
               onClick={() => navigate('/auth')}
             >
-              <Trophy className="w-6 h-6 mr-3" />
-              Deine Reise beginnen
+              Start Your Journey
             </Button>
             <Button 
               size="lg" 
               variant="outline" 
-              className="text-xl px-12 py-8 border-2 border-blue-600 hover:bg-blue-50"
+              className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 text-xl px-12 py-6"
+              onClick={() => navigate('/analytics')}
             >
-              <Heart className="w-6 h-6 mr-3" />
-              Live Demo ansehen
+              View Demo
             </Button>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
-            <Card className="border-2 border-blue-200 bg-blue-50/50">
-              <CardContent className="text-center p-6">
-                <div className="text-4xl font-bold text-blue-600 mb-2">10.000+</div>
-                <div className="text-gray-600">Aktive Nutzer</div>
-              </CardContent>
-            </Card>
-            <Card className="border-2 border-purple-200 bg-purple-50/50">
-              <CardContent className="text-center p-6">
-                <div className="text-4xl font-bold text-purple-600 mb-2">€2.5M+</div>
-                <div className="text-gray-600">Krankenkassen-Boni ausgezahlt</div>
-              </CardContent>
-            </Card>
-            <Card className="border-2 border-red-200 bg-red-50/50">
-              <CardContent className="text-center p-6">
-                <div className="text-4xl font-bold text-red-600 mb-2">95%</div>
-                <div className="text-gray-600">Nutzerzufriedenheit</div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
-          {features.map((feature, index) => (
-            <Card 
-              key={index} 
-              className="group hover:shadow-2xl transition-all duration-500 border-0 bg-white/80 backdrop-blur-sm"
-            >
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-2xl text-gray-900">{feature.title}</CardTitle>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-lg text-gray-600 leading-relaxed">
-                  {feature.description}
-                </CardDescription>
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-20">
+          {stats.map((stat, index) => (
+            <Card key={index} className="text-center border-2 border-blue-100 hover:border-blue-300 transition-all duration-300">
+              <CardContent className="p-8">
+                <stat.icon className="w-12 h-12 mx-auto mb-4 text-blue-600" />
+                <div className="text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                <div className="text-gray-600 font-medium">{stat.label}</div>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Testimonials */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12">Was unsere Community sagt</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                    ))}
+        {/* Features Section */}
+        <div className="mb-20">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+              Revolutionary Features
+            </Badge>
+            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+              Everything You Need for 
+              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent block">
+                Fitness Success
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our comprehensive platform combines cutting-edge technology with proven fitness science 
+              to deliver results that matter.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="border-2 border-gray-100 hover:border-gray-300 hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center shadow-lg mb-4`}>
+                    <feature.icon className="w-8 h-8 text-white" />
                   </div>
-                  <p className="text-gray-600 mb-6 italic text-lg">"{testimonial.text}"</p>
-                  <div>
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-gray-500">{testimonial.role}</div>
-                  </div>
+                  <CardTitle className="text-2xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base leading-relaxed">
+                    {feature.description}
+                  </CardDescription>
                 </CardContent>
               </Card>
             ))}
@@ -194,26 +191,48 @@ const Index = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 rounded-3xl p-16 text-white">
-          <h2 className="text-4xl font-bold mb-6">Bereit für deine Bewegungsrevolution?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Schließe dich Tausenden von Bayern an, die bereits ihre Fitnessziele erreichen
-          </p>
-          <Button 
-            size="lg" 
-            className="bg-white text-purple-600 hover:bg-gray-100 text-xl px-12 py-6"
-            onClick={() => navigate('/auth')}
-          >
-            <Trophy className="w-6 h-6 mr-3" />
-            Kostenlos starten
-          </Button>
-        </div>
-
-        {/* Bavaria Footer */}
-        <div className="mt-16 text-center">
-          <Badge variant="outline" className="text-lg px-6 py-2">
-            🏛️ Unterstützt vom Bayerischen Staatsministerium für Gesundheit, Pflege und Prävention
-          </Badge>
+        <div className="text-center">
+          <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-2xl">
+            <CardContent className="p-12">
+              <Trophy className="w-20 h-20 mx-auto mb-6 text-amber-300" />
+              <h3 className="text-4xl font-bold mb-6">Ready to Transform Your Fitness Journey?</h3>
+              <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+                Join thousands of users who are already earning insurance bonuses, 
+                competing in leagues, and achieving their fitness goals with BewegungsLiga+.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-blue-600 hover:bg-gray-100 text-xl px-12 py-6 font-semibold"
+                  onClick={() => navigate('/auth')}
+                >
+                  Get Started Free
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-white text-white hover:bg-white/10 text-xl px-12 py-6"
+                  onClick={() => navigate('/analytics')}
+                >
+                  Explore Analytics
+                </Button>
+              </div>
+              <div className="mt-8 flex items-center justify-center gap-8 text-sm opacity-80">
+                <span className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Insurance Integrated
+                </span>
+                <span className="flex items-center gap-2">
+                  <Award className="w-4 h-4" />
+                  Real Rewards
+                </span>
+                <span className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Proven Results
+                </span>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

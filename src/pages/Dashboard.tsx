@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Target, Trophy, Users, Calendar, Zap, Brain, Heart, TrendingUp, Award, Medal, Flame, Crown, Shield } from 'lucide-react';
+import { Activity, Target, Trophy, Users, Calendar, Zap, Brain, Heart, TrendingUp, Award, Medal, Flame, Crown, Shield, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -17,9 +17,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) setGreeting('Guten Morgen');
-    else if (hour < 18) setGreeting('Guten Tag');
-    else setGreeting('Guten Abend');
+    if (hour < 12) setGreeting('Good Morning');
+    else if (hour < 18) setGreeting('Good Afternoon');
+    else setGreeting('Good Evening');
   }, []);
 
   const stats = {
@@ -37,21 +37,21 @@ const Dashboard = () => {
 
   const competitions = [
     {
-      title: "Bayern Winter Challenge",
-      description: "10.000 Schritte täglich im Januar",
+      title: "Bavaria Winter Challenge",
+      description: "10,000 steps daily throughout January",
       progress: 78,
       daysLeft: 8,
-      prize: "€50 + Wellness Wochenende",
+      prize: "€50 + Wellness Weekend",
       participants: 2847,
       icon: Medal,
       color: "from-blue-600 to-blue-700"
     },
     {
-      title: "Neujahrs-Liga",
-      description: "Wöchentliche Team-Herausforderung",
+      title: "New Year League",
+      description: "Weekly team challenges",
       progress: 92,
       daysLeft: 3,
-      prize: "€100 Sportgutschein",
+      prize: "€100 Sports Voucher",
       participants: 156,
       icon: Crown,
       color: "from-amber-500 to-orange-600"
@@ -60,30 +60,37 @@ const Dashboard = () => {
 
   const quickActions = [
     {
-      title: "Training starten",
-      description: "Beginne deine Fitness-Session",
+      title: "Start Workout",
+      description: "Begin your fitness session",
       icon: Activity,
       action: () => navigate('/workout-start'),
       color: "from-green-600 to-emerald-600",
       featured: true
     },
     {
-      title: "KI-Coach",
-      description: "Personalisierte Beratung erhalten",
+      title: "AI Coach",
+      description: "Get personalized guidance",
       icon: Brain,
       action: () => navigate('/ai-coach'),
       color: "from-purple-600 to-violet-600"
     },
     {
-      title: "Fortschritt anzeigen",
-      description: "Deine Erfolge verfolgen",
+      title: "View Progress",
+      description: "Track your achievements",
       icon: TrendingUp,
       action: () => navigate('/progress'),
       color: "from-blue-600 to-cyan-600"
     },
     {
-      title: "Liga & Community",
-      description: "Mit Freunden verbinden",
+      title: "Analytics Dashboard",
+      description: "View detailed insights",
+      icon: BarChart3,
+      action: () => navigate('/analytics'),
+      color: "from-indigo-600 to-purple-600"
+    },
+    {
+      title: "League & Community",
+      description: "Connect with friends",
       icon: Users,
       action: () => navigate('/social'),
       color: "from-amber-500 to-orange-600"
@@ -104,7 +111,7 @@ const Dashboard = () => {
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
                   BewegungsLiga+
                 </span>
-                <div className="text-xs text-gray-600">Dein Fitness-Companion</div>
+                <div className="text-xs text-gray-600">Your Fitness Companion</div>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -114,9 +121,9 @@ const Dashboard = () => {
               </Badge>
               <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0">
                 <Flame className="w-4 h-4 mr-1" />
-                {stats.currentStreak} Tage Streak
+                {stats.currentStreak} Day Streak
               </Badge>
-              <Button variant="outline" onClick={signOut}>Abmelden</Button>
+              <Button variant="outline" onClick={signOut}>Sign Out</Button>
             </div>
           </div>
         </div>
@@ -130,16 +137,16 @@ const Dashboard = () => {
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
                 {greeting}, {user?.email?.split('@')[0] || 'Champion'}! 🏆
               </h1>
-              <p className="text-gray-600 text-lg">Bereit, deine Fitnessziele heute zu erreichen?</p>
+              <p className="text-gray-600 text-lg">Ready to crush your fitness goals today?</p>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-2 mb-2">
                 <div className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
-                  Liga Rang #{stats.leagueRank}
+                  League Rank #{stats.leagueRank}
                 </div>
                 <Medal className="w-8 h-8 text-amber-500" />
               </div>
-              <p className="text-gray-600">Bayern Winter Liga</p>
+              <p className="text-gray-600">Bavaria Winter League</p>
             </div>
           </div>
         </header>
@@ -148,7 +155,7 @@ const Dashboard = () => {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <Trophy className="w-7 h-7 text-amber-500" />
-            Aktive Wettkämpfe
+            Active Competitions
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {competitions.map((comp, index) => (
@@ -165,7 +172,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                     <Badge variant="outline" className="border-amber-500 text-amber-700">
-                      {comp.daysLeft} Tage
+                      {comp.daysLeft} days
                     </Badge>
                   </div>
                 </CardHeader>
@@ -173,7 +180,7 @@ const Dashboard = () => {
                   <div className="space-y-3">
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span>Fortschritt</span>
+                        <span>Progress</span>
                         <span className="font-semibold">{comp.progress}%</span>
                       </div>
                       <Progress value={comp.progress} className="h-3" />
@@ -181,7 +188,7 @@ const Dashboard = () => {
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-600">
                         <Users className="w-4 h-4 inline mr-1" />
-                        {comp.participants.toLocaleString()} Teilnehmer
+                        {comp.participants.toLocaleString()} participants
                       </span>
                       <span className="font-semibold text-amber-700">🏆 {comp.prize}</span>
                     </div>
@@ -198,9 +205,9 @@ const Dashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100">Wöchentliche Schritte</p>
+                  <p className="text-blue-100">Weekly Steps</p>
                   <p className="text-3xl font-bold">{stats.weeklySteps.toLocaleString()}</p>
-                  <p className="text-blue-200 text-sm">Ziel: {stats.weeklyGoal.toLocaleString()}</p>
+                  <p className="text-blue-200 text-sm">Goal: {stats.weeklyGoal.toLocaleString()}</p>
                 </div>
                 <Activity className="w-10 h-10 text-blue-200" />
               </div>
@@ -215,9 +222,9 @@ const Dashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100">Krankenkassen-Bonus</p>
+                  <p className="text-purple-100">Insurance Bonus</p>
                   <p className="text-3xl font-bold">{stats.insuranceBonus}%</p>
-                  <p className="text-purple-200 text-sm">bis zur Auszahlung</p>
+                  <p className="text-purple-200 text-sm">to payout</p>
                 </div>
                 <Shield className="w-10 h-10 text-purple-200" />
               </div>
@@ -232,9 +239,9 @@ const Dashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100">Trainings</p>
+                  <p className="text-green-100">Workouts</p>
                   <p className="text-3xl font-bold">{stats.workoutsThisWeek}</p>
-                  <p className="text-green-200 text-sm">Diese Woche</p>
+                  <p className="text-green-200 text-sm">This week</p>
                 </div>
                 <Target className="w-10 h-10 text-green-200" />
               </div>
@@ -245,9 +252,9 @@ const Dashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-red-100">Herzfrequenz</p>
+                  <p className="text-red-100">Heart Rate</p>
                   <p className="text-3xl font-bold">{stats.avgHeartRate}</p>
-                  <p className="text-red-200 text-sm">BPM Durchschnitt</p>
+                  <p className="text-red-200 text-sm">BPM Average</p>
                 </div>
                 <Heart className="w-10 h-10 text-red-200" />
               </div>
@@ -256,7 +263,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           {quickActions.map((action, index) => (
             <Card 
               key={index} 
@@ -273,7 +280,7 @@ const Dashboard = () => {
                 <p className="text-gray-600 text-sm">{action.description}</p>
                 {action.featured && (
                   <Badge className="mt-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-                    Empfohlen
+                    Recommended
                   </Badge>
                 )}
               </CardContent>
@@ -287,20 +294,20 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-blue-600" />
-                Versicherungsbonus Fortschritt
+                Insurance Bonus Progress
               </CardTitle>
-              <CardDescription>Verfolge deinen Fortschritt zu Versicherungsbelohnungen</CardDescription>
+              <CardDescription>Track your progress toward insurance rewards</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Monatsziel Fortschritt</span>
-                  <span className="text-sm text-gray-600">22/25 Tage</span>
+                  <span className="text-sm font-medium">Monthly Goal Progress</span>
+                  <span className="text-sm text-gray-600">22/25 days</span>
                 </div>
                 <Progress value={88} className="w-full" />
                 <div className="text-center">
                   <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                    Noch 3 Tage bis zu €75 Bonus!
+                    Only 3 days to €75 bonus!
                   </Badge>
                 </div>
               </div>
@@ -311,9 +318,9 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-amber-600" />
-                Liga Leaderboard
+                League Leaderboard
               </CardTitle>
-              <CardDescription>Dein Ranking in der Bayern Winter Liga</CardDescription>
+              <CardDescription>Your ranking in the Bavaria Winter League</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -323,8 +330,8 @@ const Dashboard = () => {
                       <Crown className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium">Bayern Winter Liga</p>
-                      <p className="text-sm text-gray-600">Rang #{stats.leagueRank} von 2.847</p>
+                      <p className="font-medium">Bavaria Winter League</p>
+                      <p className="text-sm text-gray-600">Rank #{stats.leagueRank} of 2,847</p>
                     </div>
                   </div>
                   <Button 
@@ -333,7 +340,7 @@ const Dashboard = () => {
                     onClick={() => navigate('/social')}
                     className="border-amber-200 hover:bg-amber-50"
                   >
-                    Anzeigen
+                    View
                   </Button>
                 </div>
               </div>
@@ -346,16 +353,16 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-gray-600" />
-              Letzte Aktivitäten
+              Recent Activities
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {[
-                { activity: "HIIT-Training abgeschlossen", time: "vor 2 Stunden", calories: 320, badge: "🔥" },
-                { activity: "12k Schritte erreicht", time: "Gestern", calories: 450, badge: "👟" },
-                { activity: "Neuer Rekord bei Kniebeugen", time: "vor 2 Tagen", calories: 280, badge: "💪" },
-                { activity: "Liga-Challenge gewonnen", time: "vor 3 Tagen", calories: 0, badge: "🏆" }
+                { activity: "HIIT training completed", time: "2 hours ago", calories: 320, badge: "🔥" },
+                { activity: "12k steps reached", time: "Yesterday", calories: 450, badge: "👟" },
+                { activity: "New record in squats", time: "2 days ago", calories: 280, badge: "💪" },
+                { activity: "League challenge won", time: "3 days ago", calories: 0, badge: "🏆" }
               ].map((item, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
