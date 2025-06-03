@@ -1,220 +1,292 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Dumbbell, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Dumbbell, Mail, Lock, User, ArrowRight, Zap, Shield, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-
-  // Form states
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [signupData, setSignupData] = useState({
+  const { toast } = useToast();
+  const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
-    username: ''
+    fullName: ''
   });
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    setLoading(true);
 
-    // Simulate login
-    setTimeout(() => {
-      navigate('/dashboard');
-      setIsLoading(false);
-    }, 1500);
-  };
+    try {
+      if (isLogin) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+        if (error) throw error;
 
-    if (signupData.password !== signupData.confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
+        toast({
+          title: "Welcome back!",
+          description: "Successfully signed in to your account.",
+        });
+
+        navigate('/dashboard');
+      } else {
+        if (formData.password !== formData.confirmPassword) {
+          throw new Error('Passwords do not match');
+        }
+
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              full_name: formData.fullName,
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Account created!",
+          description: "Welcome to FitBuddy AI. Let's start your fitness journey!",
+        });
+
+        navigate('/dashboard');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-
-    // Simulate signup
-    setTimeout(() => {
-      navigate('/onboarding');
-      setIsLoading(false);
-    }, 1500);
   };
+
+  const features = [
+    {
+      icon: Zap,
+      title: "AI-Powered Coaching",
+      description: "Get personalized workouts and real-time feedback"
+    },
+    {
+      icon: Shield,
+      title: "Insurance Benefits",
+      description: "Earn rewards and discounts on your health insurance"
+    },
+    {
+      icon: Heart,
+      title: "Health Tracking",
+      description: "Monitor your progress with comprehensive analytics"
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-            <Dumbbell className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-cyan-50 to-teal-50 flex">
+      {/* Left Panel - Features */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 bg-gradient-to-br from-emerald-600 to-cyan-600 text-white">
+        <div className="max-w-md">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <Dumbbell className="w-7 h-7" />
+            </div>
+            <span className="text-2xl font-bold">FitBuddy AI</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to BewegungsLiga+</h1>
-          <p className="text-gray-600">Your smart fitness companion</p>
+          
+          <h2 className="text-4xl font-bold mb-6">
+            Transform Your Fitness Journey
+          </h2>
+          
+          <p className="text-xl text-emerald-100 mb-8">
+            Join thousands of users who are achieving their fitness goals with AI-powered coaching and community support.
+          </p>
+
+          <div className="space-y-6">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">{feature.title}</h3>
+                  <p className="text-emerald-100">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full border-2 border-white"></div>
+                ))}
+              </div>
+              <span className="font-semibold">50,000+ Active Users</span>
+            </div>
+            <p className="text-emerald-100">Join our thriving fitness community</p>
+          </div>
         </div>
+      </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Get Started</CardTitle>
-            <CardDescription>Sign in to your account or create a new one</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
+      {/* Right Panel - Auth Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          {/* Mobile Header */}
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-xl flex items-center justify-center">
+              <Dumbbell className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">FitBuddy AI</h1>
+          </div>
 
-              {error && (
-                <Alert className="mt-4 border-red-200 bg-red-50">
-                  <AlertDescription className="text-red-800">{error}</AlertDescription>
-                </Alert>
+          <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50 shadow-xl">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl text-gray-900">
+                {isLogin ? 'Welcome Back!' : 'Join FitBuddy AI'}
+              </CardTitle>
+              <CardDescription>
+                {isLogin 
+                  ? 'Sign in to continue your fitness journey' 
+                  : 'Start your smart fitness journey today'
+                }
+              </CardDescription>
+              
+              {!isLogin && (
+                <Badge className="mx-auto bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
+                  Free to start • Premium features available
+                </Badge>
               )}
+            </CardHeader>
 
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isLogin && (
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="pl-10"
-                        value={loginData.email}
-                        onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                        required
-                      />
-                    </div>
+                    <Label htmlFor="fullName" className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Full Name
+                    </Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                      required
+                      className="border-emerald-200 focus:border-emerald-500"
+                    />
                   </div>
+                )}
 
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                    className="border-emerald-200 focus:border-emerald-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    required
+                    className="border-emerald-200 focus:border-emerald-500"
+                  />
+                </div>
+
+                {!isLogin && (
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="login-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                        className="pl-10 pr-10"
-                        value={loginData.password}
-                        onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
+                    <Label htmlFor="confirmPassword" className="flex items-center gap-2">
+                      <Lock className="w-4 h-4" />
+                      Confirm Password
+                    </Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                      required
+                      className="border-emerald-200 focus:border-emerald-500"
+                    />
                   </div>
+                )}
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Signing in...' : 'Sign In'}
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold py-3"
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      {isLogin ? 'Sign In' : 'Create Account'}
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                >
+                  {isLogin 
+                    ? "Don't have an account? Sign up" 
+                    : "Already have an account? Sign in"
+                  }
+                </Button>
+              </div>
+
+              {isLogin && (
+                <div className="mt-4 text-center">
+                  <Button variant="ghost" className="text-sm text-gray-600 hover:text-emerald-600">
+                    Forgot your password?
                   </Button>
-                </form>
-              </TabsContent>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-              <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="pl-10"
-                        value={signupData.email}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-username">Username</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-username"
-                        type="text"
-                        placeholder="Choose a username"
-                        className="pl-10"
-                        value={signupData.username}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, username: e.target.value }))}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
-                        className="pl-10 pr-10"
-                        value={signupData.password}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-confirm-password">Confirm Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-confirm-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Confirm your password"
-                        className="pl-10"
-                        value={signupData.confirmPassword}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-
-        <div className="text-center mt-6">
-          <Button variant="ghost" onClick={() => navigate('/')}>
-            ← Back to Home
-          </Button>
+          <div className="mt-6 text-center text-sm text-gray-600">
+            By continuing, you agree to our Terms of Service and Privacy Policy
+          </div>
         </div>
       </div>
     </div>

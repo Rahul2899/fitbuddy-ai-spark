@@ -2,238 +2,297 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Pause, SkipForward, Timer, Flame, Target, Camera, Users } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Play, Pause, SkipForward, Timer, Flame, Target, User, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import WorkoutFormChecker from '@/components/WorkoutFormChecker';
 
 const WorkoutStart = () => {
   const navigate = useNavigate();
-  const [currentExercise, setCurrentExercise] = useState(0);
+  const [selectedWorkout, setSelectedWorkout] = useState<string>('hiit');
   const [isActive, setIsActive] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(45);
-  const [workoutStarted, setWorkoutStarted] = useState(false);
-  const [activeTab, setActiveTab] = useState('workout');
+  const [currentExercise, setCurrentExercise] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(30);
+  const [totalTime, setTotalTime] = useState(0);
 
-  const workout = {
-    name: "HIIT Cardio Blast",
-    duration: "20 minutes",
-    exercises: [
-      { name: "Jumping Jacks", duration: 45, rest: 15, reps: null },
-      { name: "Push-ups", duration: 45, rest: 15, reps: "10-15" },
-      { name: "Mountain Climbers", duration: 45, rest: 15, reps: null },
-      { name: "Squats", duration: 45, rest: 15, reps: "15-20" },
-      { name: "Plank", duration: 45, rest: 15, reps: null },
-      { name: "Burpees", duration: 45, rest: 15, reps: "5-10" }
-    ],
-    estimatedCalories: 280
-  };
+  const workoutTypes = [
+    {
+      id: 'hiit',
+      name: 'HIIT Blast',
+      duration: 20,
+      calories: 300,
+      exercises: 8,
+      difficulty: 'High',
+      description: 'High-intensity interval training for maximum calorie burn',
+      color: 'from-emerald-500 to-teal-500'
+    },
+    {
+      id: 'strength',
+      name: 'Strength Builder',
+      duration: 30,
+      calories: 250,
+      exercises: 6,
+      difficulty: 'Medium',
+      description: 'Build muscle and increase strength with targeted exercises',
+      color: 'from-cyan-500 to-blue-500'
+    },
+    {
+      id: 'cardio',
+      name: 'Cardio Core',
+      duration: 25,
+      calories: 350,
+      exercises: 10,
+      difficulty: 'Medium',
+      description: 'Improve cardiovascular health and core strength',
+      color: 'from-teal-500 to-emerald-500'
+    },
+    {
+      id: 'yoga',
+      name: 'Flexibility Flow',
+      duration: 40,
+      calories: 150,
+      exercises: 12,
+      difficulty: 'Low',
+      description: 'Enhance flexibility and mindfulness with yoga poses',
+      color: 'from-blue-500 to-cyan-500'
+    }
+  ];
+
+  const exercises = [
+    { name: 'Jumping Jacks', duration: 30, rest: 10 },
+    { name: 'Push-ups', duration: 30, rest: 10 },
+    { name: 'Mountain Climbers', duration: 30, rest: 10 },
+    { name: 'Burpees', duration: 30, rest: 10 },
+    { name: 'High Knees', duration: 30, rest: 10 },
+    { name: 'Plank', duration: 30, rest: 10 },
+    { name: 'Squats', duration: 30, rest: 10 },
+    { name: 'Lunges', duration: 30, rest: 0 }
+  ];
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isActive && timeLeft > 0) {
+    if (isActive && timeRemaining > 0) {
       interval = setInterval(() => {
-        setTimeLeft(time => time - 1);
+        setTimeRemaining(time => time - 1);
+        setTotalTime(time => time + 1);
       }, 1000);
-    } else if (timeLeft === 0) {
-      handleNextExercise();
+    } else if (timeRemaining === 0 && currentExercise < exercises.length - 1) {
+      setCurrentExercise(prev => prev + 1);
+      setTimeRemaining(exercises[currentExercise + 1]?.duration || 30);
+    } else if (timeRemaining === 0 && currentExercise === exercises.length - 1) {
+      navigate('/workout-complete');
     }
     return () => clearInterval(interval);
-  }, [isActive, timeLeft]);
+  }, [isActive, timeRemaining, currentExercise, navigate]);
+
+  const selectedWorkoutData = workoutTypes.find(w => w.id === selectedWorkout);
+  const progress = ((currentExercise + (1 - timeRemaining / 30)) / exercises.length) * 100;
 
   const startWorkout = () => {
-    setWorkoutStarted(true);
     setIsActive(true);
+    setTimeRemaining(exercises[0].duration);
   };
 
-  const toggleTimer = () => {
-    setIsActive(!isActive);
-  };
+  const pauseWorkout = () => setIsActive(!isActive);
 
-  const handleNextExercise = () => {
-    if (currentExercise < workout.exercises.length - 1) {
+  const skipExercise = () => {
+    if (currentExercise < exercises.length - 1) {
       setCurrentExercise(prev => prev + 1);
-      setTimeLeft(45);
-    } else {
-      setIsActive(false);
-      // Navigate to workout complete page
-      navigate('/workout-complete');
+      setTimeRemaining(exercises[currentExercise + 1]?.duration || 30);
     }
   };
 
   const formatTime = (seconds: number) => {
-    return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progress = ((currentExercise + 1) / workout.exercises.length) * 100;
-
-  if (!workoutStarted) {
+  if (isActive || currentExercise > 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-cyan-50 to-teal-50 p-6">
         <div className="max-w-4xl mx-auto">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/dashboard')}
-            className="mb-4"
-          >
-            ← Back to Dashboard
-          </Button>
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedWorkoutData?.name}</h1>
+            <Progress value={progress} className="w-full max-w-md mx-auto mb-4" />
+            <p className="text-gray-600">Exercise {currentExercise + 1} of {exercises.length}</p>
+          </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="workout">Workout Plan</TabsTrigger>
-              <TabsTrigger value="form-check">Form Checker</TabsTrigger>
-              <TabsTrigger value="buddy-finder">Find Buddy</TabsTrigger>
-            </TabsList>
+          {/* Main Workout Display */}
+          <Card className="mb-6 bg-white/80 backdrop-blur-sm border-emerald-200/50">
+            <CardContent className="p-8 text-center">
+              <div className="mb-6">
+                <Badge className="mb-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white text-lg px-4 py-2">
+                  {exercises[currentExercise]?.name}
+                </Badge>
+              </div>
 
-            <TabsContent value="workout">
-              <Card className="mb-6">
-                <CardHeader className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-full flex items-center justify-center">
-                    <Target className="w-10 h-10 text-white" />
-                  </div>
-                  <CardTitle className="text-2xl">{workout.name}</CardTitle>
-                  <CardDescription>Get ready to sweat!</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="text-center">
-                      <Timer className="w-6 h-6 mx-auto mb-2 text-blue-600" />
-                      <p className="text-sm text-gray-600">Duration</p>
-                      <p className="font-semibold">{workout.duration}</p>
-                    </div>
-                    <div className="text-center">
-                      <Target className="w-6 h-6 mx-auto mb-2 text-green-600" />
-                      <p className="text-sm text-gray-600">Exercises</p>
-                      <p className="font-semibold">{workout.exercises.length}</p>
-                    </div>
-                    <div className="text-center">
-                      <Flame className="w-6 h-6 mx-auto mb-2 text-orange-600" />
-                      <p className="text-sm text-gray-600">Est. Calories</p>
-                      <p className="font-semibold">{workout.estimatedCalories}</p>
-                    </div>
-                  </div>
+              <div className="mb-8">
+                <div className="text-8xl font-bold text-gray-900 mb-2">
+                  {formatTime(timeRemaining)}
+                </div>
+                <p className="text-gray-600">Time Remaining</p>
+              </div>
 
-                  <div className="space-y-2 mb-6">
-                    <h3 className="font-semibold mb-3">Workout Preview:</h3>
-                    {workout.exercises.map((exercise, index) => (
-                      <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                        <span className="font-medium">{exercise.name}</span>
-                        <Badge variant="outline">{exercise.duration}s</Badge>
-                      </div>
-                    ))}
-                  </div>
+              {/* Exercise Demo Area */}
+              <div className="mb-8 p-6 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-xl">
+                <div className="w-32 h-32 mx-auto mb-4 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-full flex items-center justify-center">
+                  <User className="w-16 h-16 text-white" />
+                </div>
+                <p className="text-gray-700">Follow the form shown above</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-2 border-emerald-200 hover:bg-emerald-50"
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  Enable Form Check
+                </Button>
+              </div>
 
-                  <Button 
-                    onClick={startWorkout}
-                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-lg py-6"
-                  >
-                    <Play className="w-6 h-6 mr-2" />
-                    Start Workout
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
+              {/* Controls */}
+              <div className="flex justify-center gap-4">
+                <Button
+                  onClick={pauseWorkout}
+                  size="lg"
+                  className="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700"
+                >
+                  {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                </Button>
+                <Button
+                  onClick={skipExercise}
+                  size="lg"
+                  variant="outline"
+                  className="border-emerald-200 hover:bg-emerald-50"
+                >
+                  <SkipForward className="w-6 h-6" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-            <TabsContent value="form-check">
-              <WorkoutFormChecker />
-            </TabsContent>
-
-            <TabsContent value="buddy-finder">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-6 h-6" />
-                    Workout Buddy Finder
-                  </CardTitle>
-                  <CardDescription>
-                    Find someone to workout with for extra motivation!
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="text-center py-8">
-                  <Users className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                  <h3 className="text-lg font-semibold mb-2">Find Your Workout Partner</h3>
-                  <p className="text-gray-600 mb-6">
-                    Connect with fitness enthusiasts in your area and make working out more fun!
-                  </p>
-                  <Button 
-                    onClick={() => navigate('/buddy-finder')}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600"
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    Find Workout Buddies
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          {/* Workout Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50">
+              <CardContent className="p-4 text-center">
+                <Timer className="w-6 h-6 mx-auto mb-2 text-emerald-600" />
+                <div className="text-lg font-bold">{formatTime(totalTime)}</div>
+                <div className="text-sm text-gray-600">Total Time</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50">
+              <CardContent className="p-4 text-center">
+                <Flame className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+                <div className="text-lg font-bold">{Math.floor(totalTime * 8)}</div>
+                <div className="text-sm text-gray-600">Calories</div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50">
+              <CardContent className="p-4 text-center">
+                <Target className="w-6 h-6 mx-auto mb-2 text-cyan-600" />
+                <div className="text-lg font-bold">{currentExercise}</div>
+                <div className="text-sm text-gray-600">Completed</div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-6">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold mb-2">{workout.name}</h1>
-          <Progress value={progress} className="w-full" />
-          <p className="text-sm text-gray-600 mt-2">
-            Exercise {currentExercise + 1} of {workout.exercises.length}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-cyan-50 to-teal-50 p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Choose Your Workout</h1>
+            <p className="text-gray-600 mt-2">Select a workout that matches your goals and fitness level</p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/dashboard')}
+            className="border-emerald-200 hover:bg-emerald-50"
+          >
+            Back to Dashboard
+          </Button>
         </div>
 
-        <Card className="mb-6">
-          <CardContent className="p-8 text-center">
-            <h2 className="text-3xl font-bold mb-4">{workout.exercises[currentExercise].name}</h2>
-            
-            <div className="text-8xl font-bold text-green-600 mb-6">
-              {formatTime(timeLeft)}
-            </div>
+        {/* Workout Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {workoutTypes.map((workout) => (
+            <Card 
+              key={workout.id}
+              className={`cursor-pointer transition-all duration-300 border-2 ${
+                selectedWorkout === workout.id 
+                  ? 'border-emerald-500 ring-2 ring-emerald-500 ring-opacity-50' 
+                  : 'border-emerald-200/50 hover:border-emerald-300'
+              } bg-white/80 backdrop-blur-sm`}
+              onClick={() => setSelectedWorkout(workout.id)}
+            >
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-xl">{workout.name}</CardTitle>
+                    <CardDescription className="mt-2">{workout.description}</CardDescription>
+                  </div>
+                  <Badge 
+                    className={`bg-gradient-to-r ${workout.color} text-white`}
+                  >
+                    {workout.difficulty}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">{workout.duration}</div>
+                    <div className="text-sm text-gray-600">Minutes</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">{workout.calories}</div>
+                    <div className="text-sm text-gray-600">Calories</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">{workout.exercises}</div>
+                    <div className="text-sm text-gray-600">Exercises</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-            {workout.exercises[currentExercise].reps && (
-              <Badge className="mb-4 text-lg py-2 px-4">
-                Target: {workout.exercises[currentExercise].reps} reps
-              </Badge>
-            )}
-
-            <div className="flex justify-center gap-4">
-              <Button
-                onClick={toggleTimer}
-                size="lg"
-                className="bg-gradient-to-r from-green-600 to-blue-600"
-              >
-                {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-              </Button>
-              
-              <Button
-                onClick={handleNextExercise}
-                size="lg"
-                variant="outline"
-              >
-                <SkipForward className="w-6 h-6" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Next Up</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {currentExercise < workout.exercises.length - 1 ? (
-              <div className="flex justify-between items-center">
-                <span className="font-medium">{workout.exercises[currentExercise + 1].name}</span>
-                <Badge variant="outline">{workout.exercises[currentExercise + 1].duration}s</Badge>
+        {/* Selected Workout Details */}
+        {selectedWorkoutData && (
+          <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50 mb-8">
+            <CardHeader>
+              <CardTitle>Workout Preview: {selectedWorkoutData.name}</CardTitle>
+              <CardDescription>Here's what you'll be doing today</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                {exercises.slice(0, 8).map((exercise, index) => (
+                  <div key={index} className="text-center p-3 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-lg">
+                    <div className="font-medium text-gray-900">{exercise.name}</div>
+                    <div className="text-sm text-gray-600">{exercise.duration}s</div>
+                  </div>
+                ))}
               </div>
-            ) : (
-              <p className="text-center text-green-600 font-semibold">Last exercise! You're almost done! 🎉</p>
-            )}
-          </CardContent>
-        </Card>
+              
+              <div className="text-center">
+                <Button 
+                  onClick={startWorkout}
+                  size="lg"
+                  className="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-lg px-8 py-6"
+                >
+                  <Play className="w-6 h-6 mr-2" />
+                  Start Workout
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
