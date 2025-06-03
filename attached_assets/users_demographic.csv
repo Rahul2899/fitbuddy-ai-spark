@@ -1,0 +1,51 @@
+user_id,first_name,last_name,age,gender,ethnicity,nationality,city,state,postal_code,education_level,occupation,income_bracket
+USR001,Max,Müller,28,Male,German,German,Berlin,Berlin,10115,University,Software Engineer,50000-75000
+USR002,Anna,Schmidt,34,Female,German,German,Munich,Bavaria,80331,University,Doctor,75000-100000
+USR003,Thomas,Weber,45,Male,German,German,Hamburg,Hamburg,20095,Master,Business Manager,75000-100000
+USR004,Sarah,Fischer,29,Female,Turkish-German,German,Cologne,North Rhine-Westphalia,50667,University,Marketing Specialist,40000-50000
+USR005,Michael,Wagner,52,Male,German,German,Frankfurt,Hesse,60311,PhD,Financial Analyst,100000+
+USR006,Lisa,Becker,26,Female,German,German,Stuttgart,Baden-Württemberg,70173,University,Engineer,50000-75000
+USR007,David,Schulz,31,Male,Polish-German,German,Düsseldorf,North Rhine-Westphalia,40213,Master,IT Consultant,60000-75000
+USR008,Julia,Hoffmann,38,Female,German,German,Leipzig,Saxony,04109,University,Teacher,35000-40000
+USR009,Martin,Schäfer,42,Male,German,German,Dortmund,North Rhine-Westphalia,44135,Technical,Mechanic,40000-50000
+USR010,Elena,Richter,33,Female,Russian-German,German,Essen,North Rhine-Westphalia,45127,University,Architect,50000-75000
+USR011,Patrick,Klein,27,Male,German,German,Bremen,Bremen,28195,University,Graphic Designer,35000-40000
+USR012,Sabrina,Wolf,41,Female,German,German,Dresden,Saxony,01067,Master,Project Manager,60000-75000
+USR013,Andreas,Neumann,36,Male,German,German,Hanover,Lower Saxony,30159,University,Sales Manager,50000-75000
+USR014,Christina,Schwarz,30,Female,Italian-German,German,Nuremberg,Bavaria,90402,University,HR Specialist,45000-50000
+USR015,Robert,Zimmermann,48,Male,German,German,Duisburg,North Rhine-Westphalia,47051,Technical,Electrician,45000-50000
+USR016,Melanie,Braun,35,Female,German,German,Bochum,North Rhine-Westphalia,44787,University,Pharmacist,55000-75000
+USR017,Stefan,Hartmann,39,Male,Austrian-German,German,Wuppertal,North Rhine-Westphalia,42103,Master,Civil Engineer,65000-75000
+USR018,Nicole,Lange,32,Female,German,German,Bielefeld,North Rhine-Westphalia,33602,University,Journalist,40000-45000
+USR019,Benjamin,Schmitt,44,Male,German,German,Bonn,North Rhine-Westphalia,53111,PhD,Research Scientist,75000-100000
+USR020,Katharina,Krüger,37,Female,French-German,German,Münster,North Rhine-Westphalia,48143,Master,Translator,40000-50000
+USR021,Oliver,Meier,29,Male,German,German,Karlsruhe,Baden-Württemberg,76133,University,Software Developer,55000-75000
+USR022,Petra,Lehmann,46,Female,German,German,Mannheim,Baden-Württemberg,68159,Technical,Nurse,35000-40000
+USR023,Alexander,König,33,Male,Czech-German,German,Augsburg,Bavaria,86150,University,Economist,50000-75000
+USR024,Simone,Walter,40,Female,German,German,Wiesbaden,Hesse,65183,Master,Consultant,65000-75000
+USR025,Daniel,Herrmann,26,Male,German,German,Göttingen,Lower Saxony,37073,University,Research Assistant,30000-35000
+USR026,Claudia,Peters,43,Female,German,German,Würzburg,Bavaria,97070,University,Veterinarian,60000-75000
+USR027,Jan,Schneider,35,Male,Danish-German,German,Ulm,Baden-Württemberg,89073,Master,Product Manager,70000-75000
+USR028,Heike,Müller,38,Female,German,German,Freiburg,Baden-Württemberg,79098,University,Social Worker,35000-40000
+USR029,Thorsten,Koch,41,Male,German,German,Kiel,Schleswig-Holstein,24103,Technical,Shipbuilder,50000-60000
+USR030,Anja,Richter,34,Female,Dutch-German,German,Rostock,Mecklenburg-Vorpommern,18055,University,Marine Biologist,45000-50000
+USR031,Marco,Bauer,47,Male,German,German,Kassel,Hesse,34117,Technical,Industrial Designer,50000-60000
+USR032,Tanja,Scholz,31,Female,German,German,Hagen,North Rhine-Westphalia,58095,University,Psychologist,40000-50000
+USR033,Ralf,Vogel,39,Male,German,German,Potsdam,Brandenburg,14467,Master,Urban Planner,55000-65000
+USR034,Silke,Frank,36,Female,German,German,Osnabrück,Lower Saxony,49074,University,Event Manager,40000-50000
+USR035,Florian,Berger,28,Male,Swiss-German,German,Heidelberg,Baden-Württemberg,69115,University,Biochemist,50000-75000
+USR036,Gabi,Weiß,45,Female,German,German,Solingen,North Rhine-Westphalia,42651,Technical,Quality Manager,55000-65000
+USR037,Uwe,Jung,50,Male,German,German,Leverkusen,North Rhine-Westphalia,51373,Master,Chemical Engineer,75000-85000
+USR038,Kerstin,Hahn,32,Female,German,German,Neuss,North Rhine-Westphalia,41460,University,Interior Designer,35000-45000
+USR039,Dirk,Kraus,37,Male,German,German,Paderborn,North Rhine-Westphalia,33098,Technical,IT Technician,45000-55000
+USR040,Nadine,Groß,33,Female,Spanish-German,German,Regensburg,Bavaria,93047,University,Language Teacher,35000-40000
+USR041,Carsten,Sommer,42,Male,German,German,Ingolstadt,Bavaria,85049,Master,Automotive Engineer,70000-80000
+USR042,Birgit,Roth,39,Female,German,German,Heilbronn,Baden-Württemberg,74072,University,Nutritionist,40000-50000
+USR043,Frank,Keller,44,Male,German,German,Wolfsburg,Lower Saxony,38440,Technical,Production Manager,60000-70000
+USR044,Susanne,Huber,35,Female,Austrian-German,German,Reutlingen,Baden-Württemberg,72764,University,Physical Therapist,40000-50000
+USR045,Matthias,Günther,29,Male,German,German,Koblenz,Rhineland-Palatinate,56068,University,Web Developer,45000-55000
+USR046,Regina,Nowak,41,Female,Polish-German,German,Siegen,North Rhine-Westphalia,57072,Master,Business Analyst,55000-65000
+USR047,Jörg,Fuchs,48,Male,German,German,Gera,Thuringia,07545,Technical,Plant Manager,60000-70000
+USR048,Martina,Schreiber,34,Female,German,German,Cottbus,Brandenburg,03046,University,Environmental Scientist,45000-55000
+USR049,Lars,Weiss,36,Male,Swedish-German,German,Schwerin,Mecklenburg-Vorpommern,19053,Master,Marine Engineer,60000-70000
+USR050,Doris,Stein,43,Female,German,German,Mainz,Rhineland-Palatinate,55116,University,Museum Curator,40000-50000

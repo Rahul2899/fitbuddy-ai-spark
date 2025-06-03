@@ -1,0 +1,49 @@
+service_id,provider_id,service_name,service_type,category,description,reward_amount,reward_type,eligibility_criteria,max_annual_benefit,activity_requirement,age_restriction,digital_app_required,popularity_score
+SRV001,INS001,TK-Fit,Bonus Program,Fitness,"Earn points for physical activities tracked through the TK app",200,Euro Cash,Active participation in fitness activities,200,10000 steps/week,None,Yes,9.2
+SRV002,INS001,TK-Smart Relax,Wellness Program,Mental Health,"Stress management and relaxation courses",150,Euro Cash,Participation in mindfulness programs,150,2 courses/year,None,Yes,8.8
+SRV003,INS001,TK-Coach,Health Coaching,Prevention,"Personal health coaching via app",0,Free Service,TK membership,0,Regular check-ins,None,Yes,9.0
+SRV004,INS001,Gym Partnership,Fitness Discount,Fitness,"Discounts at partner fitness studios",300,Discount,Membership verification,300,None,None,No,8.5
+SRV005,INS002,AOK-Curaplan,Disease Management,Chronic Care,"Structured treatment programs for chronic diseases",0,Free Service,Diagnosed chronic condition,0,Regular monitoring,None,No,8.7
+SRV006,INS002,Gesund & Aktiv Bonus,Bonus Program,Prevention,"Annual bonus for preventive health measures",500,Euro Cash,Health checkups and activities,500,Annual checkup + activities,None,No,8.9
+SRV007,INS002,Rücken Aktiv,Back Health,Fitness,"Back strengthening courses and programs",120,Euro Cash,Participation in back health programs,120,8 sessions/year,None,No,8.3
+SRV008,INS002,Familie Plus,Family Program,Family Health,"Additional benefits for families with children",200,Euro Cash,Family membership,200,Child health checkups,Under 18,No,8.6
+SRV009,INS003,Barmer 7Mind,Mental Health,Wellness,"Premium access to meditation app",60,App Subscription,Barmer membership,60,Regular app usage,None,Yes,8.4
+SRV010,INS003,Barmer Fit Challenge,Fitness Challenge,Fitness,"Monthly fitness challenges with rewards",150,Euro Cash,Active participation,150,Monthly challenges,None,Yes,8.7
+SRV011,INS003,Kinderplus,Pediatric Care,Family Health,"Enhanced pediatric care services",300,Service Value,Children under 18,300,Regular checkups,Under 18,No,9.1
+SRV012,INS003,Gesund Leben Bonus,Lifestyle Bonus,Prevention,"Bonus for healthy lifestyle choices",400,Euro Cash,Healthy lifestyle verification,400,Annual assessment,None,Yes,8.8
+SRV013,INS004,DAK fit!,Fitness Program,Fitness,"Comprehensive fitness and nutrition program",250,Euro Cash,Program participation,250,12 weeks participation,None,Yes,8.6
+SRV014,INS004,MamaPLUS,Maternity Care,Women's Health,"Enhanced maternity and pregnancy care",500,Service Value,Pregnant members,500,Prenatal care participation,18-45,No,9.3
+SRV015,INS004,AktivBonus,Activity Bonus,Prevention,"Bonus for various health activities",300,Euro Cash,Activity documentation,300,5 different activities/year,None,No,8.5
+SRV016,INS004,SmartCoach,Digital Health,Prevention,"AI-powered health coaching",0,Free Service,DAK membership,0,Regular interaction,None,Yes,8.9
+SRV017,INS005,AOK-Livego,Fitness Tracking,Fitness,"Fitness tracking with reward system",180,Euro Cash,Fitness tracker usage,180,Daily tracking,None,Yes,8.4
+SRV018,INS005,Stress im Griff,Stress Management,Mental Health,"Stress management workshops",100,Euro Cash,Workshop participation,100,4 sessions/year,None,No,8.2
+SRV019,INS005,Workplace Health,Occupational Health,Workplace,"Enhanced workplace health services",200,Service Value,Employer partnership,200,Workplace assessments,None,No,8.7
+SRV020,INS005,NordVital,Regional Program,Prevention,"Regional health and wellness initiatives",150,Euro Cash,Regional participation,150,Local event participation,None,No,8.0
+SRV021,INS006,IKK Bonus,General Bonus,Prevention,"Comprehensive bonus program for health activities",600,Euro Cash,Multiple health activities,600,6 different activities/year,None,No,9.0
+SRV022,INS006,Betriebssport Plus,Corporate Sports,Fitness,"Enhanced corporate sports programs",250,Euro Cash,Employer sports programs,250,Team participation,None,No,8.3
+SRV023,INS006,IKK Gesund Plus,Health Plus,Prevention,"Premium preventive care package",400,Service Value,Enhanced membership,400,Annual comprehensive checkup,None,No,8.8
+SRV024,INS006,Digital Detox,Digital Wellness,Mental Health,"Programs for healthy digital habits",80,Euro Cash,Program completion,80,4-week program,None,Yes,7.9
+SRV025,INS007,BKK ProVita,Vitality Program,Wellness,"Comprehensive vitality and wellness program",350,Euro Cash,Active participation,350,Quarterly assessments,None,Yes,8.6
+SRV026,INS007,BerufsFit,Occupational Fitness,Workplace,"Fitness programs for specific professions",200,Euro Cash,Professional group membership,200,Occupation-specific training,None,No,8.4
+SRV027,INS007,Innovation Health,Digital Health,Prevention,"Access to latest digital health innovations",0,Free Service,Beta program participation,0,Product testing,None,Yes,8.1
+SRV028,INS007,VBU SportPartner,Sports Partnership,Fitness,"Partnerships with sports clubs and facilities",300,Discount,Membership verification,300,Regular facility usage,None,No,8.7
+SRV029,INS008,HEK Fit&Gesund,Fitness and Health,Fitness,"Integrated fitness and health monitoring",220,Euro Cash,Health and fitness tracking,220,Monthly targets,None,Yes,8.5
+SRV030,INS008,Maritime Health,Specialized Care,Occupational,"Specialized health services for maritime workers",400,Service Value,Maritime profession,400,Occupation-specific checkups,None,No,8.9
+SRV031,INS008,HEK Balance,Work-Life Balance,Mental Health,"Work-life balance coaching and support",150,Euro Cash,Coaching participation,150,6 sessions/year,None,No,8.3
+SRV032,INS008,Nordsee Aktiv,Regional Activities,Fitness,"Regional fitness activities in Northern Germany",180,Euro Cash,Regional participation,180,Local event participation,None,No,8.1
+SRV033,INS009,Allianz Care Premium,Premium Care,Comprehensive,"Comprehensive premium healthcare services",1000,Service Value,Premium membership,1000,Quarterly health assessments,None,Yes,9.5
+SRV034,INS009,Executive Health,Executive Care,Comprehensive,"Specialized health services for executives",2000,Service Value,Executive status verification,2000,Annual executive physical,None,No,9.4
+SRV035,INS009,Allianz Fitness Elite,Elite Fitness,Fitness,"Access to premium fitness facilities and trainers",500,Service Value,Premium membership,500,Personal trainer sessions,None,No,9.2
+SRV036,INS009,International Health,International Care,Travel,"Global health coverage and services",1500,Service Value,International travel,1500,Travel health insurance,None,Yes,9.3
+SRV037,INS010,AXA Vitality,Vitality Program,Wellness,"Comprehensive wellness and rewards program",400,Euro Cash,Active lifestyle tracking,400,Weekly activity goals,None,Yes,8.9
+SRV038,INS010,AXA Mind,Mental Wellness,Mental Health,"Mental health and psychological support services",300,Service Value,Mental health program participation,300,Regular consultations,None,Yes,8.7
+SRV039,INS010,Premium Sports,Premium Fitness,Fitness,"Access to premium sports facilities and coaches",600,Service Value,Premium membership,600,Regular facility usage,None,No,9.0
+SRV040,INS010,AXA International,Global Health,International,"International health coverage and emergency services",800,Service Value,International coverage plan,800,Travel documentation,None,Yes,9.1
+SRV041,INS011,Signal Aktiv,Activity Program,Fitness,"Comprehensive activity tracking and rewards",280,Euro Cash,Activity participation,280,Weekly activity goals,None,Yes,8.4
+SRV042,INS011,Prävention Plus,Prevention Plus,Prevention,"Enhanced preventive care and screening",350,Service Value,Prevention program participation,350,Annual comprehensive screening,None,No,8.8
+SRV043,INS011,Signal Familie,Family Health,Family Health,"Comprehensive family health programs",450,Service Value,Family membership,450,Family health assessments,None,No,8.6
+SRV044,INS011,Digital Health Hub,Digital Platform,Digital Health,"Comprehensive digital health platform",0,Free Service,Signal membership,0,Regular platform usage,None,Yes,8.2
+SRV045,INS012,DKV Bonus,Health Bonus,Prevention,"Comprehensive health bonus program",500,Euro Cash,Health activity participation,500,5 activities/year,None,No,8.9
+SRV046,INS012,DKV Sport,Sports Program,Fitness,"Sports activities and facility partnerships",300,Discount,Sports participation,300,Regular sports activities,None,No,8.5
+SRV047,INS012,DKV Gesund Leben,Healthy Living,Lifestyle,"Comprehensive healthy lifestyle program",250,Euro Cash,Lifestyle program participation,250,Quarterly lifestyle assessment,None,Yes,8.7
+SRV048,INS012,DKV Check-up Plus,Health Screening,Prevention,"Enhanced health screening and checkup services",400,Service Value,Annual checkup participation,400,Comprehensive annual exam,None,No,9.0

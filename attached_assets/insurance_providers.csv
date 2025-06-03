@@ -1,0 +1,13 @@
+provider_id,provider_name,provider_type,headquarters,founded_year,members_count,website,phone,email,focus_areas,rating
+INS001,Techniker Krankenkasse,Statutory,Hamburg,1884,11000000,tk.de,+49 40 46066-0,service@tk.de,"Digital Health,Prevention,Innovation",4.8
+INS002,AOK Bayern,Statutory,Munich,1883,4500000,aok.de,+49 89 6262-0,service@by.aok.de,"Regional Care,Family Health,Prevention",4.3
+INS003,Barmer,Statutory,Wuppertal,1884,9000000,barmer.de,+49 800 333004,service@barmer.de,"Comprehensive Care,Digital Services,Mental Health",4.5
+INS004,DAK-Gesundheit,Statutory,Hamburg,1774,5600000,dak.de,+49 40 2396-0,service@dak.de,"Employee Health,Prevention,Family Support",4.4
+INS005,AOK Nordrhein,Statutory,Düsseldorf,1883,2800000,aok.de,+49 211 8791-0,service@nw.aok.de,"Regional Focus,Workplace Health,Prevention",4.2
+INS006,IKK classic,Statutory,Dresden,1884,3200000,ikk-classic.de,+49 351 4292-0,service@ikk-classic.de,"Employer Focus,Workplace Wellness,Prevention",4.3
+INS007,BKK VBU,Statutory,Berlin,1949,650000,bkk-vbu.de,+49 30 72612-0,service@bkk-vbu.de,"Professional Groups,Specialized Care,Innovation",4.1
+INS008,HEK - Hanseatische Krankenkasse,Statutory,Bremen,1904,750000,hek.de,+49 421 3655-0,service@hek.de,"Personal Service,Maritime Focus,Prevention",4.4
+INS009,Allianz Private,Private,Munich,1890,2100000,allianz.de,+49 89 3800-0,service@allianz.de,"Premium Care,Comprehensive Coverage,International",4.6
+INS010,AXA Krankenversicherung,Private,Cologne,1816,1800000,axa.de,+49 221 148-0,service@axa.de,"Premium Services,International Coverage,Innovation",4.5
+INS011,Signal Iduna,Private,Dortmund,1907,1200000,signal-iduna.de,+49 231 135-0,service@signal-iduna.de,"Comprehensive Insurance,Health Management,Prevention",4.2
+INS012,DKV Deutsche Krankenversicherung,Private,Cologne,1927,2500000,dkv.com,+49 221 5733-0,service@dkv.com,"Health Insurance,Prevention,Wellness Programs",4.4

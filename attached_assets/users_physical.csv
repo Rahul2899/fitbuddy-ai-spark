@@ -1,0 +1,51 @@
+user_id,height_cm,weight_kg,bmi,blood_type,medical_conditions,allergies,current_insurance_provider,fitness_level,resting_heart_rate,blood_pressure_systolic,blood_pressure_diastolic,cholesterol_total,glucose_level,last_medical_checkup,medications,smoking_status,alcohol_consumption,sleep_hours_avg,exercise_frequency_per_week
+USR001,178,72,22.7,A+,None,Pollen,Techniker Krankenkasse,Intermediate,68,120,80,180,95,2023-08-15,None,Non-smoker,Moderate,7.5,4
+USR002,165,58,21.3,O-,None,None,AOK Bayern,Advanced,62,115,75,165,88,2023-09-20,None,Non-smoker,Low,8.0,6
+USR003,182,85,25.7,B+,Hypertension,Shellfish,Barmer,Beginner,75,140,90,220,102,2023-07-10,Lisinopril,Non-smoker,Moderate,6.5,2
+USR004,170,63,21.8,AB+,None,Nuts,DAK-Gesundheit,Intermediate,70,125,82,175,92,2023-09-05,None,Non-smoker,Low,7.8,5
+USR005,175,78,25.5,A-,Diabetes Type 2,None,Allianz Private,Beginner,72,135,85,240,125,2023-08-30,Metformin,Ex-smoker,High,6.8,1
+USR006,168,61,21.6,O+,None,Latex,Techniker Krankenkasse,Advanced,64,118,78,170,89,2023-09-12,None,Non-smoker,Low,8.2,5
+USR007,180,76,23.5,A+,None,None,AOK Nordrhein,Intermediate,69,128,83,185,96,2023-08-25,None,Non-smoker,Moderate,7.4,4
+USR008,162,55,21.0,B-,Asthma,Dust mites,BKK VBU,Intermediate,66,122,79,172,91,2023-09-18,Salbutamol,Non-smoker,Low,7.9,3
+USR009,176,82,26.5,O+,Lower back pain,None,IKK classic,Beginner,74,132,88,195,98,2023-07-28,Ibuprofen,Smoker,High,6.2,2
+USR010,172,64,21.6,AB-,None,Cats,HEK,Advanced,63,119,76,168,87,2023-09-08,None,Non-smoker,Moderate,8.1,6
+USR011,174,69,22.8,A+,None,None,Techniker Krankenkasse,Intermediate,71,124,81,178,94,2023-08-20,None,Non-smoker,Moderate,7.6,3
+USR012,166,59,21.4,O-,Hypothyroidism,Soy,AOK Bayern,Advanced,65,121,77,174,90,2023-09-15,Levothyroxine,Non-smoker,Low,8.0,5
+USR013,181,79,24.1,B+,None,None,Barmer,Intermediate,68,126,84,182,95,2023-08-18,None,Non-smoker,High,7.2,4
+USR014,169,62,21.7,A-,None,Penicillin,DAK-Gesundheit,Intermediate,67,123,80,176,93,2023-09-10,None,Non-smoker,Moderate,7.7,4
+USR015,177,84,26.8,O+,Knee arthritis,None,IKK classic,Beginner,76,138,91,205,103,2023-07-22,Naproxen,Ex-smoker,Moderate,6.4,1
+USR016,164,56,20.8,AB+,None,None,Techniker Krankenkasse,Advanced,61,116,74,163,86,2023-09-22,None,Non-smoker,Low,8.3,6
+USR017,179,77,24.0,A+,None,Eggs,BKK VBU,Intermediate,70,127,82,180,94,2023-08-28,None,Non-smoker,Moderate,7.5,4
+USR018,167,60,21.5,B-,Migraines,None,AOK Nordrhein,Intermediate,68,125,81,177,92,2023-09-03,Sumatriptan,Non-smoker,Low,7.8,3
+USR019,183,81,24.2,O-,None,None,Allianz Private,Advanced,66,120,78,170,89,2023-09-14,None,Non-smoker,Moderate,8.1,5
+USR020,165,58,21.3,A+,None,Milk,HEK,Intermediate,69,124,80,175,91,2023-08-31,None,Non-smoker,Low,7.9,4
+USR021,176,73,23.6,AB-,None,None,Techniker Krankenkasse,Advanced,65,122,79,173,90,2023-09-16,None,Non-smoker,Moderate,8.0,5
+USR022,163,57,21.5,O+,Fibromyalgia,None,AOK Bayern,Beginner,73,130,86,190,97,2023-07-19,Pregabalin,Non-smoker,Low,6.8,2
+USR023,178,75,23.7,B+,None,Gluten,Barmer,Intermediate,68,125,82,179,93,2023-08-22,None,Non-smoker,Moderate,7.6,4
+USR024,170,61,21.1,A-,None,None,DAK-Gesundheit,Advanced,64,118,76,167,88,2023-09-19,None,Non-smoker,High,8.2,6
+USR025,175,71,23.2,O-,None,None,IKK classic,Intermediate,70,126,83,181,95,2023-09-01,None,Non-smoker,Moderate,7.7,3
+USR026,168,59,20.9,AB+,None,Antibiotics,Techniker Krankenkasse,Advanced,62,117,75,165,87,2023-09-13,None,Non-smoker,Low,8.1,5
+USR027,180,78,24.1,A+,None,None,BKK VBU,Intermediate,67,123,80,176,92,2023-08-26,None,Non-smoker,Moderate,7.8,4
+USR028,166,58,21.0,B-,Depression,None,AOK Nordrhein,Intermediate,71,127,82,183,96,2023-09-07,Sertraline,Non-smoker,Low,7.4,3
+USR029,179,83,25.9,O+,Sleep apnea,None,HEK,Beginner,77,136,89,198,101,2023-07-25,CPAP therapy,Ex-smoker,Moderate,6.5,2
+USR030,171,63,21.6,A-,None,Seafood,Allianz Private,Advanced,63,119,77,169,88,2023-09-11,None,Non-smoker,Low,8.0,6
+USR031,177,80,25.5,AB-,None,None,Techniker Krankenkasse,Beginner,74,133,87,192,99,2023-08-17,None,Smoker,High,6.6,1
+USR032,164,56,20.8,O-,Anxiety,None,AOK Bayern,Intermediate,69,124,81,178,94,2023-09-04,Escitalopram,Non-smoker,Low,7.5,4
+USR033,182,79,23.9,B+,None,None,Barmer,Advanced,66,121,78,172,90,2023-09-17,None,Non-smoker,Moderate,8.0,5
+USR034,167,60,21.5,A+,None,Pollen,DAK-Gesundheit,Intermediate,68,125,82,177,93,2023-08-29,None,Non-smoker,Moderate,7.7,3
+USR035,174,72,23.8,O+,None,None,IKK classic,Advanced,65,120,79,174,91,2023-09-20,None,Non-smoker,Low,8.1,5
+USR036,165,58,21.3,AB+,Osteoporosis,None,Techniker Krankenkasse,Beginner,72,129,85,186,97,2023-07-30,Alendronate,Non-smoker,Moderate,7.0,2
+USR037,181,85,26.0,A-,High cholesterol,None,BKK VBU,Beginner,75,135,88,245,105,2023-08-12,Atorvastatin,Ex-smoker,High,6.7,1
+USR038,169,61,21.4,B-,None,None,AOK Nordrhein,Intermediate,67,123,80,175,92,2023-09-06,None,Non-smoker,Moderate,7.8,4
+USR039,176,76,24.5,O-,None,Dust,HEK,Intermediate,70,126,83,180,94,2023-08-24,None,Non-smoker,Moderate,7.4,3
+USR040,163,55,20.7,A+,None,None,Allianz Private,Advanced,64,118,76,166,87,2023-09-18,None,Non-smoker,Low,8.2,6
+USR041,179,82,25.6,AB-,None,None,Techniker Krankenkasse,Intermediate,68,124,81,178,93,2023-08-21,None,Non-smoker,High,7.6,4
+USR042,166,59,21.4,O+,Celiac disease,Gluten,AOK Bayern,Intermediate,69,125,82,179,95,2023-09-09,None,Non-smoker,Moderate,7.7,4
+USR043,178,80,25.2,B+,None,None,Barmer,Beginner,73,131,86,188,98,2023-07-27,None,Smoker,High,6.3,2
+USR044,170,62,21.5,A-,None,Latex,DAK-Gesundheit,Advanced,63,119,77,168,89,2023-09-21,None,Non-smoker,Low,8.0,5
+USR045,175,74,24.2,O-,None,None,IKK classic,Intermediate,71,127,84,182,96,2023-08-16,None,Non-smoker,Moderate,7.5,3
+USR046,168,60,21.3,AB+,Prediabetes,None,Techniker Krankenkasse,Intermediate,70,128,83,195,110,2023-09-02,None,Non-smoker,Moderate,7.3,4
+USR047,180,84,25.9,A+,None,None,BKK VBU,Beginner,76,134,87,200,102,2023-07-24,None,Ex-smoker,High,6.4,1
+USR048,164,57,21.2,B-,None,Pollen,AOK Nordrhein,Advanced,65,120,78,171,90,2023-09-12,None,Non-smoker,Low,8.1,5
+USR049,177,78,24.9,O+,None,None,HEK,Intermediate,67,122,80,176,92,2023-08-27,None,Non-smoker,Moderate,7.8,4
+USR050,165,58,21.3,A-,Hypothyroidism,Iodine,Allianz Private,Intermediate,68,124,81,177,94,2023-09-05,Levothyroxine,Non-smoker,Low,7.6,3
