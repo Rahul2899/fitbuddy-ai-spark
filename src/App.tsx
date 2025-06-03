@@ -13,6 +13,8 @@ import AICoach from "./pages/AICoach";
 import WorkoutStart from "./pages/WorkoutStart";
 import Social from "./pages/Social";
 import NotFound from "./pages/NotFound";
+import WorkoutBuddyFinder from "./components/WorkoutBuddyFinder";
+import HealthInsuranceIntegration from "./components/HealthInsuranceIntegration";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,26 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Social />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/buddy-finder" 
+              element={
+                <ProtectedRoute>
+                  <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+                    <WorkoutBuddyFinder />
+                  </div>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/health-insurance" 
+              element={
+                <ProtectedRoute>
+                  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+                    <HealthInsuranceIntegration />
+                  </div>
                 </ProtectedRoute>
               } 
             />
