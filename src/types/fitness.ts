@@ -6,6 +6,7 @@ export type FitnessLevel = 'beginner' | 'intermediate' | 'advanced';
 
 export interface UserProfile {
   id: string;
+  csvUserId: string;
   age: number;
   gender: Gender;
   fitnessLevel: FitnessLevel;
@@ -13,6 +14,67 @@ export interface UserProfile {
   limitations: string[];
   createdAt: string;
   updatedAt: string;
+  weekly_activity?: {
+    total_steps: number;
+    exercise_sessions: number;
+    calories_burned: number;
+  };
+  health_metrics?: {
+    resting_heart_rate: number;
+  };
+}
+
+// ADD: New interface that matches the actual API response
+export interface APIUserProfile {
+  user_id: string;
+  age: number;
+  gender: string;
+  fitness_level: string;
+  weekly_activity: {
+    total_steps: number;
+    exercise_sessions: number;
+    calories_burned: number;
+    active_minutes: number;
+  };
+  health_metrics: {
+    resting_heart_rate: number;
+    max_heart_rate: number;
+    sleep_hours: number;
+    stress_level: number;
+  };
+  goals: {
+    weekly_step_goal: number;
+    weekly_workout_goal: number;
+    target_weight: number;
+  };
+}
+
+// UPDATE: Fix UserProfileResponse to handle both error and success cases
+export interface UserProfileResponse {
+  error?: string;
+  data?: UserProfile;
+  // ADD: For direct API responses (when no error)
+  user_id?: string;
+  age?: number;
+  gender?: string;
+  fitness_level?: string;
+  weekly_activity?: {
+    total_steps: number;
+    exercise_sessions: number;
+    calories_burned: number;
+    active_minutes: number;
+  };
+  health_metrics?: {
+    resting_heart_rate: number;
+    max_heart_rate: number;
+    sleep_hours: number;
+    stress_level: number;
+  };
+  goals?: {
+    weekly_step_goal: number;
+    weekly_workout_goal: number;
+    target_weight: number;
+  };
 }
 
 export interface WorkoutActivity {
@@ -48,4 +110,4 @@ export interface AdaptiveTip {
   type: 'motivation' | 'warning' | 'achievement';
   message: string;
   condition: (plan: WorkoutPlan) => boolean;
-} 
+}

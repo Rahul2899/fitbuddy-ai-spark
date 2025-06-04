@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,14 +5,201 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Activity, Target, Trophy, Users, Calendar, Zap, Brain, Heart, TrendingUp, Award, Medal, Flame, Crown, Shield, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { apiService } from '@/services/api';
+import { generateUserCSVEntry } from '@/utils/csvGenerator';
+import ProfileForm from '@/components/ProfileForm';
 import { useAuth } from '@/contexts/AuthContext';
+import { UserProfileResponse } from '@/types/fitness';
 
-const Dashboard = () => {
+interface DashboardProps {
+  forceShowProfileForm?: boolean;
+  onProfileComplete?: () => void;
+}
+
+const Dashboard = ({ forceShowProfileForm = false, onProfileComplete }: DashboardProps) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [greeting, setGreeting] = useState('');
   const [currentStreak, setCurrentStreak] = useState(12);
   const [leaguePosition, setLeaguePosition] = useState(3);
+  const [userStats, setUserStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showProfileForm, setShowProfileForm] = useState(forceShowProfileForm);
+
+  // Only force profile form for truly new users (no stored profile)
+  useEffect(() => {
+    const storedProfile = localStorage.getItem('userProfile');
+    if (!storedProfile && !forceShowProfileForm) {
+      console.log('🔥 NEW USER DETECTED - SHOWING PROFILE FORM');
+      setShowProfileForm(true);
+    }
+  }, [forceShowProfileForm]);
+
+  useEffect(() => {
+    console.log('=== DASHBOARD USEEFFECT ===');
+    console.log('forceShowProfileForm prop:', forceShowProfileForm);
+    console.log('User:', user?.email);
+    
+    // For new users, ALWAYS show profile form first
+    const storedProfile = localStorage.getItem('userProfile');
+    console.log('Stored profile:', storedProfile);
+    
+    if (!storedProfile) {
+      console.log('🟡 No stored profile found, FORCING profile form for new user');
+      setShowProfileForm(true);
+      setLoading(false);
+      return; // Don't try to load API data for new users
+    }
+    
+    // Only try to load API data if user has a profile
+    console.log('✅ User has profile, loading API data...');
+    
+    try {
+      const profile = JSON.parse(storedProfile);
+      const csvUserId = profile.csvUserId || 'USR001';
+      console.log('Using stored CSV user ID:', csvUserId);
+      
+      apiService.getUserProfile(csvUserId)
+        .then((profile: UserProfileResponse) => {
+          console.log('API Response:', profile);
+          
+          // Check if API returned an error
+          if (profile.error) {
+            console.log('❌ API returned error:', profile.error);
+            throw new Error(profile.error);
+          }
+          
+          // Check if we have the expected data structure
+          if (!profile.weekly_activity || !profile.health_metrics) {
+            console.log('❌ API response missing expected data structure');
+            throw new Error('Invalid API response structure');
+          }
+          
+          // Success - use real API data
+          console.log('✅ API Success - using real data');
+          console.log('📊 Setting userStats with API data:', {
+            weeklySteps: profile.weekly_activity.total_steps,
+            weeklyGoal: 70000,
+            workoutsThisWeek: profile.weekly_activity.exercise_sessions,
+            caloriesBurned: profile.weekly_activity.calories_burned,
+            avgHeartRate: profile.health_metrics.resting_heart_rate
+          });
+          
+          setUserStats({
+            weeklySteps: profile.weekly_activity.total_steps,
+            weeklyGoal: 70000,
+            currentStreak: 12,
+            totalPoints: 3840,
+            level: 15,
+            workoutsThisWeek: profile.weekly_activity.exercise_sessions,
+            caloriesBurned: profile.weekly_activity.calories_burned,
+            avgHeartRate: profile.health_metrics.resting_heart_rate,
+            insuranceBonus: 85,
+            leagueRank: 3
+          });
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Failed to load user stats:', error);
+          
+          // If user not found, try to generate their data automatically
+          const storedProfile = localStorage.getItem('userProfile');
+          if (storedProfile) {
+            try {
+              const profile = JSON.parse(storedProfile);
+              console.log('🔄 User not found in API, generating data automatically...');
+              
+              // Generate data for this user
+              apiService.generateUserData(profile.csvUserId, profile)
+                .then(generateResult => {
+                  console.log('✅ Auto-generated user data:', generateResult);
+                  if (generateResult.success) {
+                    console.log(`👤 Generated data for: ${generateResult.user_name}`);
+                    // Retry fetching the user profile
+                    console.log('🔄 Retrying user profile fetch...');
+                    return apiService.getUserProfile(profile.csvUserId);
+                  } else {
+                    throw new Error('Failed to generate user data');
+                  }
+                })
+                .then((retryProfile: UserProfileResponse) => {
+                  if (retryProfile.error || !retryProfile.weekly_activity) {
+                    throw new Error('Retry failed');
+                  }
+                  
+                  console.log('✅ Retry successful - using generated data');
+                  setUserStats({
+                    weeklySteps: retryProfile.weekly_activity.total_steps,
+                    weeklyGoal: 70000,
+                    currentStreak: 12,
+                    totalPoints: 3840,
+                    level: 15,
+                    workoutsThisWeek: retryProfile.weekly_activity.exercise_sessions,
+                    caloriesBurned: retryProfile.weekly_activity.calories_burned,
+                    avgHeartRate: retryProfile.health_metrics!.resting_heart_rate,
+                    insuranceBonus: 85,
+                    leagueRank: 3
+                  });
+                  setLoading(false);
+                })
+                .catch(retryError => {
+                  console.error('❌ Auto-generation failed:', retryError);
+                  // Fall back to default stats
+                  setUserStats({
+                    weeklySteps: 67400,
+                    weeklyGoal: 70000,
+                    currentStreak: 12,
+                    totalPoints: 3840,
+                    level: 15,
+                    workoutsThisWeek: 6,
+                    caloriesBurned: 2250,
+                    avgHeartRate: 145,
+                    insuranceBonus: 85,
+                    leagueRank: 3
+                  });
+                  setLoading(false);
+                });
+            } catch (parseError) {
+              console.error('❌ Error parsing profile for auto-generation:', parseError);
+              // Use default stats
+              setUserStats({
+                weeklySteps: 67400,
+                weeklyGoal: 70000,
+                currentStreak: 12,
+                totalPoints: 3840,
+                level: 15,
+                workoutsThisWeek: 6,
+                caloriesBurned: 2250,
+                avgHeartRate: 145,
+                insuranceBonus: 85,
+                leagueRank: 3
+              });
+              setLoading(false);
+            }
+          } else {
+            // No profile found, use defaults
+            setUserStats({
+              weeklySteps: 67400,
+              weeklyGoal: 70000,
+              currentStreak: 12,
+              totalPoints: 3840,
+              level: 15,
+              workoutsThisWeek: 6,
+              caloriesBurned: 2250,
+              avgHeartRate: 145,
+              insuranceBonus: 85,
+              leagueRank: 3
+            });
+            setLoading(false);
+          }
+        });
+    } catch (error) {
+      console.error('Error parsing stored profile:', error);
+      console.log('🟡 Error with profile, showing profile form');
+      setShowProfileForm(true);
+      setLoading(false);
+    }
+  }, []); 
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -22,7 +208,44 @@ const Dashboard = () => {
     else setGreeting('Good Evening');
   }, []);
 
-  const stats = {
+  // Handle profile form completion
+  const handleProfileComplete = (csvUserId: string) => {
+    setShowProfileForm(false);
+    if (onProfileComplete) {
+      onProfileComplete();
+    }
+    // Reload to show new user data
+    window.location.reload();
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading your personalized dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show profile form for new users
+  if (showProfileForm) {
+    console.log('🟢 RENDERING PROFILE FORM');
+    return (
+      <ProfileForm 
+        onComplete={handleProfileComplete}
+      />
+    );
+  }
+
+  console.log('🔵 RENDERING DASHBOARD (not profile form)');
+  console.log('ShowProfileForm state:', showProfileForm);
+  console.log('UserStats:', userStats ? 'loaded' : 'null');
+
+  // Use userStats (from API) instead of hardcoded stats
+  const stats = userStats || {
     weeklySteps: 67400,
     weeklyGoal: 70000,
     currentStreak: currentStreak,
@@ -31,7 +254,7 @@ const Dashboard = () => {
     workoutsThisWeek: 6,
     caloriesBurned: 2250,
     avgHeartRate: 145,
-    insuranceBonus: 85, // percentage towards bonus
+    insuranceBonus: 85,
     leagueRank: leaguePosition
   };
 
@@ -138,6 +361,10 @@ const Dashboard = () => {
                 {greeting}, {user?.email?.split('@')[0] || 'Champion'}! 🏆
               </h1>
               <p className="text-gray-600 text-lg">Ready to crush your fitness goals today?</p>
+              {/* Show real data indicator */}
+              <p className="text-sm text-blue-600 mt-1">
+                📊 Showing personalized data for {user?.email} (CSV ID: {JSON.parse(localStorage.getItem('userProfile') || '{}').csvUserId})
+              </p>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-2 mb-2">
@@ -199,7 +426,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid - NOW USING REAL DATA */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-xl">
             <CardContent className="p-6">

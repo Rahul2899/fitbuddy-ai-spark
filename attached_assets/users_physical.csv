@@ -48,4 +48,7 @@ USR046,168,60,21.3,AB+,Prediabetes,None,Techniker Krankenkasse,Intermediate,70,1
 USR047,180,84,25.9,A+,None,None,BKK VBU,Beginner,76,134,87,200,102,2023-07-24,None,Ex-smoker,High,6.4,1
 USR048,164,57,21.2,B-,None,Pollen,AOK Nordrhein,Advanced,65,120,78,171,90,2023-09-12,None,Non-smoker,Low,8.1,5
 USR049,177,78,24.9,O+,None,None,HEK,Intermediate,67,122,80,176,92,2023-08-27,None,Non-smoker,Moderate,7.8,4
-USR050,165,58,21.3,A-,Hypothyroidism,Iodine,Allianz Private,Intermediate,68,124,81,177,94,2023-09-05,Levothyroxine,Non-smoker,Low,7.6,3
+USR050,165,58,21.3,A-,Hypothyroidism,Iodine,Allianz Private,Intermediate,68,124,81,177,94,2023-09-05,Levothyroxine,Non-smoker,Low,7.6,3USR873162,158,65,26.0,AB+,Diabetes Type 2,None,Barmer,beginner,79,122,84,200,114,2024-12-15,Blood Pressure Medication,Never,Moderate,8.1,2
+USR873162,158,67,26.8,O-,Hypertension,Shellfish,AOK,beginner,70,116,87,158,105,2024-11-24,Blood Pressure Medication,Never,Moderate,7.1,2
+USR951864,173,83,27.7,O+,Diabetes Type 2,None,IKK,intermediate,75,127,73,174,116,2025-01-24,None,Never,None,7.7,4
+USR701361,180,75,23.1,B-,None,Shellfish,TK,advanced,53,121,74,225,116,2025-02-03,None,Never,Moderate,8.8,6

@@ -1,296 +1,232 @@
+// src/pages/Auth.tsx
+import { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Dumbbell, Mail, Lock, User, ArrowRight, Zap, Shield, Heart } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-
-const Auth = () => {
+export default function Auth() {
+  const { user, signUp, signIn, loading } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [isLogin, setIsLogin] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: '',
     fullName: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      console.log('User already logged in, checking profile...');
+      const storedProfile = localStorage.getItem('userProfile');
+      if (storedProfile) {
+        console.log('User has profile, redirecting to dashboard');
+        navigate('/dashboard');
+      } else {
+        console.log('User has no profile, redirecting to dashboard for setup');
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is already logged in, redirect
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsSubmitting(true);
 
     try {
-      if (isLogin) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
-        });
+      if (isSignUp) {
+        console.log('Starting signup for:', formData.email);
+        const { user: newUser, error } = await signUp(
+          formData.email, 
+          formData.password, 
+          { full_name: formData.fullName }
+        );
 
-        if (error) throw error;
-
-        toast({
-          title: "Welcome back!",
-          description: "Successfully signed in to your account.",
-        });
-
-        navigate('/dashboard');
-      } else {
-        if (formData.password !== formData.confirmPassword) {
-          throw new Error('Passwords do not match');
+        if (error) {
+          toast({
+            title: "Signup Failed", 
+            description: error.message,
+            variant: "destructive"
+          });
+          return;
         }
 
-        const { data, error } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-          options: {
-            data: {
-              full_name: formData.fullName,
-            }
-          }
-        });
+        if (newUser) {
+          toast({
+            title: "Account Created!", 
+            description: "Welcome to BewegungsLiga+! Let's set up your profile.",
+            variant: "default"
+          });
+          
+          // Clear any existing profile data for new user
+          localStorage.removeItem('userProfile');
+          
+          // Navigate to dashboard for profile setup
+          navigate('/dashboard');
+        }
+      } else {
+        console.log('Starting signin for:', formData.email);
+        const { user: existingUser, error } = await signIn(formData.email, formData.password);
 
-        if (error) throw error;
+        if (error) {
+          toast({
+            title: "Sign In Failed", 
+            description: error.message,
+            variant: "destructive"
+          });
+          return;
+        }
 
-        toast({
-          title: "Account created!",
-          description: "Welcome to FitBuddy AI. Let's start your fitness journey!",
-        });
-
-        navigate('/dashboard');
+        if (existingUser) {
+          toast({
+            title: "Welcome Back!", 
+            description: "You're successfully signed in.",
+            variant: "default"
+          });
+          navigate('/dashboard');
+        }
       }
     } catch (error: any) {
+      console.error('Auth error:', error);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Error", 
+        description: error.message || "Something went wrong. Please try again.",
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const features = [
-    {
-      icon: Zap,
-      title: "AI-Powered Coaching",
-      description: "Get personalized workouts and real-time feedback"
-    },
-    {
-      icon: Shield,
-      title: "Insurance Benefits",
-      description: "Earn rewards and discounts on your health insurance"
-    },
-    {
-      icon: Heart,
-      title: "Health Tracking",
-      description: "Monitor your progress with comprehensive analytics"
-    }
-  ];
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-cyan-50 to-teal-50 flex">
-      {/* Left Panel - Features */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 bg-gradient-to-br from-emerald-600 to-cyan-600 text-white">
-        <div className="max-w-md">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <Dumbbell className="w-7 h-7" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white p-8 rounded-lg shadow-lg">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 via-white to-red-600 rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <span className="text-2xl font-bold text-blue-800">BL+</span>
             </div>
-            <span className="text-2xl font-bold">FitBuddy AI</span>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {isSignUp ? 'Join BewegungsLiga+' : 'Welcome Back'}
+            </h1>
+            <p className="text-gray-600 mt-2">
+              {isSignUp ? 'Start your fitness journey today' : 'Sign in to continue your fitness journey'}
+            </p>
           </div>
-          
-          <h2 className="text-4xl font-bold mb-6">
-            Transform Your Fitness Journey
-          </h2>
-          
-          <p className="text-xl text-emerald-100 mb-8">
-            Join thousands of users who are achieving their fitness goals with AI-powered coaching and community support.
-          </p>
 
-          <div className="space-y-6">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">{feature.title}</h3>
-                  <p className="text-emerald-100">{feature.description}</p>
-                </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter your full name"
+                  required={isSignUp}
+                />
               </div>
-            ))}
-          </div>
+            )}
 
-          <div className="mt-12 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full border-2 border-white"></div>
-                ))}
-              </div>
-              <span className="font-semibold">50,000+ Active Users</span>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your email"
+                required
+              />
             </div>
-            <p className="text-emerald-100">Join our thriving fitness community</p>
-          </div>
-        </div>
-      </div>
 
-      {/* Right Panel - Auth Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          {/* Mobile Header */}
-          <div className="lg:hidden text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-xl flex items-center justify-center">
-              <Dumbbell className="w-8 h-8 text-white" />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your password"
+                required
+                minLength={6}
+              />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">FitBuddy AI</h1>
-          </div>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-emerald-200/50 shadow-xl">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl text-gray-900">
-                {isLogin ? 'Welcome Back!' : 'Join FitBuddy AI'}
-              </CardTitle>
-              <CardDescription>
-                {isLogin 
-                  ? 'Sign in to continue your fitness journey' 
-                  : 'Start your smart fitness journey today'
-                }
-              </CardDescription>
-              
-              {!isLogin && (
-                <Badge className="mx-auto bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
-                  Free to start • Premium features available
-                </Badge>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-md hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {isSignUp ? 'Creating Account...' : 'Signing In...'}
+                </div>
+              ) : (
+                isSignUp ? 'Create Account' : 'Sign In'
               )}
-            </CardHeader>
+            </button>
+          </form>
 
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName" className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      Full Name
-                    </Label>
-                    <Input
-                      id="fullName"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={formData.fullName}
-                      onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                      required
-                      className="border-emerald-200 focus:border-emerald-500"
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                    className="border-emerald-200 focus:border-emerald-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="flex items-center gap-2">
-                    <Lock className="w-4 h-4" />
-                    Password
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    required
-                    className="border-emerald-200 focus:border-emerald-500"
-                  />
-                </div>
-
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="flex items-center gap-2">
-                      <Lock className="w-4 h-4" />
-                      Confirm Password
-                    </Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Confirm your password"
-                      value={formData.confirmPassword}
-                      onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                      required
-                      className="border-emerald-200 focus:border-emerald-500"
-                    />
-                  </div>
-                )}
-
-                <Button 
-                  type="submit" 
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white font-semibold py-3"
-                >
-                  {loading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                      Processing...
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      {isLogin ? 'Sign In' : 'Create Account'}
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  )}
-                </Button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <Button
-                  variant="ghost"
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
-                >
-                  {isLogin 
-                    ? "Don't have an account? Sign up" 
-                    : "Already have an account? Sign in"
-                  }
-                </Button>
-              </div>
-
-              {isLogin && (
-                <div className="mt-4 text-center">
-                  <Button variant="ghost" className="text-sm text-gray-600 hover:text-emerald-600">
-                    Forgot your password?
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <div className="mt-6 text-center text-sm text-gray-600">
-            By continuing, you agree to our Terms of Service and Privacy Policy
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setFormData({ email: '', password: '', fullName: '' });
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium"
+            >
+              {isSignUp 
+                ? 'Already have an account? Sign In' 
+                : "Don't have an account? Sign Up"
+              }
+            </button>
           </div>
+
+          {isSignUp && (
+            <div className="mt-4 text-xs text-gray-500 text-center">
+              By signing up, you agree to our Terms of Service and Privacy Policy.
+              <br />
+              🎯 No email verification required - get started immediately!
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-};
-
-export default Auth;
+}
